@@ -199,7 +199,11 @@ public class MainActivity extends AppCompatActivity {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return;
+            //return;
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.BLUETOOTH_SCAN},
+                    1111);
         }
         checkPermissionLocation();
 
@@ -224,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Найденные устройства");
 
-        View view = getLayoutInflater().inflate(R.layout.devices_list_view, null);
+        View view = getLayoutInflater().inflate(R.layout.list_devices_view, null);
         listDevices = view.findViewById(R.id.list_devices);
         listDevices.setAdapter(mDeviceListAdapter);
 
@@ -236,8 +240,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkPermissionLocation(){
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
-            int check = checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
-            check += checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+            int check = checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION);
+            check += checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION);
             if(check != 0){
                 requestPermissions(new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1002);
             }
@@ -316,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (device != null) {
                     if (!mDevices.contains(device)) {
-                        mDeviceListAdapter.add(device);
+                        mDeviceListAdapter.mDevices.add(device);
                     }
                 }
             }

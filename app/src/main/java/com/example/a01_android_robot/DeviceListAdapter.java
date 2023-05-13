@@ -18,17 +18,17 @@ import java.util.ArrayList;
 public class DeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
     private LayoutInflater mLayoutInflater;
     private int mResourceView;
-    private ArrayList<BluetoothDevice> mDevices = new ArrayList<>();
+    public ArrayList<BluetoothDevice> mDevices = new ArrayList<>();
 
-    public DeviceListAdapter(@NonNull Context context, int resource, ArrayList<BluetoothDevice> devices) {
-        super(context, resource);
+    public DeviceListAdapter(Context context, int resource, ArrayList<BluetoothDevice> devices) {
+        super(context, resource, devices);
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResourceView = resource;
         mDevices = devices;
     }
 
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         convertView = mLayoutInflater.inflate(mResourceView, null);
 
         BluetoothDevice device = mDevices.get(position);

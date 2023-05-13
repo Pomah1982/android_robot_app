@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="35sp"/>
+            android:textSize="25sp"/>
 
         <SeekBar
             android:id="@+id/motor_1"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="35sp"/>
+            android:textSize="25sp"/>
 
         <SeekBar
             android:id="@+id/motor_2"
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="35sp"/>
+            android:textSize="25sp"/>
 
         <SeekBar
             android:id="@+id/angle"
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="35sp"/>
+            android:textSize="25sp"/>
 
         <SeekBar
             android:id="@+id/position"
