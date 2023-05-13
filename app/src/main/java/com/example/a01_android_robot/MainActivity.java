@@ -1,16 +1,46 @@
 package com.example.a01_android_robot;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final String TAG = getClass().getSimpleName();
+    private static final int REQ_ENABLE_BLUETOOTH = 1001;
     private SeekBar motor_1, motor_2, angle, position;
     private TextView speed_1, speed_2, angle_val, position_val;
+    private Button pushBtn;
+    private BluetoothAdapter bluetoothAdapter;
+    private ProgressDialog mProgressDialog;
+    private ArrayList<BluetoothDevice> mDevices = new ArrayList<>();
+    private ListView listDevices;
+    private DeviceListAdapter mDeviceListAdapter;
+
     private int minMotorSpeed = 800;
     private int maxMotorSeed = 2300;
     private int minPosition = 75;
@@ -20,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -28,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
         motor_2 = findViewById(R.id.motor_2);
         angle = findViewById(R.id.angle);
         position = findViewById(R.id.position);
+        pushBtn = findViewById(R.id.pushBtn);
+
+        //Инициализируем все остальные элементы
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter == null) {
+            Log.d(TAG, "onCreate(): Ваше устройство не поддерживает bluetooth");
+            finish();
+        }
+
+        mDeviceListAdapter = new DeviceListAdapter(this, R.layout.device_item, mDevices);
 
         //Инициализируем все отображалки значений ползунков
         speed_1 = findViewById(R.id.speed_1);
@@ -36,56 +77,249 @@ public class MainActivity extends AppCompatActivity {
         position_val = findViewById(R.id.position_val);
 
         //Устанавливаем максимальные и минимальные значения для всех ползунков
-        motor_1.setMax(2300);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { motor_1.setMin(800); }
-        motor_2.setMax(2300);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { motor_2.setMin(800); }
+        motor_1.setMax(maxMotorSeed);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            motor_1.setMin(minMotorSpeed);
+        }
+        motor_2.setMax(maxMotorSeed);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            motor_2.setMin(minMotorSpeed);
+        }
         angle.setMax(maxAngle);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { angle.setMin(minAngle); }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            angle.setMin(minAngle);
+        }
         position.setMax(maxPosition);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { position.setMin(minPosition); }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            position.setMin(minPosition);
+        }
 
         // Обработчики события изменения положения ползунков
         motor_1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 speed_1.setText(String.valueOf(progress));
+                Log.d(TAG, "motor_1_speed = " + motor_1.getProgress());
             }
 
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
 
         motor_2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 speed_2.setText(String.valueOf(progress));
+                Log.d(TAG, "motor_2_speed = " + motor_2.getProgress());
             }
 
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
 
         angle.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 angle_val.setText(String.valueOf(progress));
+                Log.d(TAG, "angle = " + angle.getProgress());
             }
 
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
 
         position.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 position_val.setText(String.valueOf(progress));
+                Log.d(TAG, "position = " + position.getProgress());
             }
 
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
+
+        pushBtn.setOnClickListener(pushBtnListner);
 
         //Устанавливаем первоначальные значения для всех движков
         motor_1.setProgress(minMotorSpeed + 1);
         motor_2.setProgress(minMotorSpeed + 1);
-        angle.setProgress((maxAngle + minAngle)/2);
-        position.setProgress((minPosition + maxPosition)/2);
+        angle.setProgress((maxAngle + minAngle) / 2);
+        position.setProgress((minPosition + maxPosition) / 2);
+
+        enableBluetooth();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.Item_search) {
+            searchDevices();
+        }
+        if (item.getItemId() == R.id.Item_exit) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void searchDevices() {
+        Log.d(TAG, "searchDevices()");
+        enableBluetooth();
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        checkPermissionLocation();
+
+        if (!bluetoothAdapter.isDiscovering()) {
+            Log.d(TAG, "searchDevices: начинаем поиск утройств");
+            bluetoothAdapter.startDiscovery();
+        }
+        if (bluetoothAdapter.isDiscovering()){
+            Log.d(TAG, "searchDevices: поиск уже был запущен, перезапускаем его еще раз");
+            bluetoothAdapter.cancelDiscovery();
+            bluetoothAdapter.startDiscovery();
+        }
+
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mRecevier, filter);
+    }
+
+    private void showListDevices(){
+        Log.d(TAG, "showListDevices()");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Найденные устройства");
+
+        View view = getLayoutInflater().inflate(R.layout.devices_list_view, null);
+        listDevices = view.findViewById(R.id.list_devices);
+        listDevices.setAdapter(mDeviceListAdapter);
+
+        builder.setView(view);
+        builder.setNegativeButton("OK", null);
+        builder.create();
+        builder.show();
+    }
+
+    private void checkPermissionLocation(){
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
+            int check = checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
+            check += checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+            if(check != 0){
+                requestPermissions(new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1002);
+            }
+        }
+    }
+
+    private void enableBluetooth() {
+        Log.d(TAG, "enableBluetooth()");
+        if (!bluetoothAdapter.isEnabled()) {
+            Log.d(TAG, "enableBluetooth: BlueTooth выключен, пытаемся включить");
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            bluetoothAdapter.enable();
+            Intent intent = new Intent(bluetoothAdapter.ACTION_REQUEST_ENABLE);
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            startActivityForResult(intent, REQ_ENABLE_BLUETOOTH);
+        }
+    }
+
+    private void showToastMessage(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (!bluetoothAdapter.isEnabled()) {
+            Log.d(TAG, "enableBluetooth: Повтоно пытаемся отправить запрос на включение buetooth");
+            enableBluetooth();
+        }
+    }
+
+    //Обработчик события нажатия на кнопку "Пуск"
+    private View.OnClickListener pushBtnListner = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "Нажата кнопка Пуск");
+
+        }
+    };
+
+    private BroadcastReceiver mRecevier = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if(action.equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)){
+                Log.d(TAG, "onReceive: ACTION_DISCOVERY_STARTED");
+                showToastMessage("Начат поиск устройств");
+                mProgressDialog = ProgressDialog.show(MainActivity.this, "Поиск устройств", "Пожалуйста подождите...");
+            }
+            if(action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
+                Log.d(TAG, "onReceive: ACTION_DISCOVERY_FINISHED");
+                showToastMessage("Поиск утройств завершен");
+                mProgressDialog.dismiss();
+                showListDevices();
+            }
+            if(action.equals(BluetoothDevice.ACTION_FOUND)){
+                Log.d(TAG, "onReceive: ACTION_FOUND");
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if (device != null) {
+                    if (!mDevices.contains(device)) {
+                        mDeviceListAdapter.add(device);
+                    }
+                }
+            }
+        }
+    };
 }

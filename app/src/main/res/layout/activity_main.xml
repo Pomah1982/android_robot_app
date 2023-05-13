@@ -18,8 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="35dp"
-            android:text="kkk"/>
+            android:textSize="35sp"/>
 
         <SeekBar
             android:id="@+id/motor_1"
@@ -39,8 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="35dp"
-            android:text="kkk"/>
+            android:textSize="35sp"/>
 
         <SeekBar
             android:id="@+id/motor_2"
@@ -60,8 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="35dp"
-            android:text="kkk"/>
+            android:textSize="35sp"/>
 
         <SeekBar
             android:id="@+id/angle"
@@ -81,8 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="35dp"
-            android:text="kkk"/>
+            android:textSize="35sp"/>
 
         <SeekBar
             android:id="@+id/position"
@@ -97,7 +93,7 @@
             android:text="Позиция на столе" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/pushBtn"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:text="Пуск"
