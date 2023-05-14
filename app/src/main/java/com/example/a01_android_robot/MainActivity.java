@@ -29,11 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.ref.Reference;
 import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
-import java.sql.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private DeviceListAdapter mDeviceListAdapter;
     private BluetoothSocket mBluetoothSocket;
     private OutputStream mOutputStream;
+    private ConnectThread connectThread;
+    private ConnectedThread connectedThread;
 
     private byte[] buffer = new byte[3];
 
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 speed_1.setText(String.valueOf(progress));
                 Log.d(TAG, "motor_1_speed = " + motor_1.getProgress());
-
+                setMessage(ChanelEnum.Motor1, progress);
             }
 
             @Override
@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 speed_2.setText(String.valueOf(progress));
                 Log.d(TAG, "motor_2_speed = " + motor_2.getProgress());
+                setMessage(ChanelEnum.Motor2, progress);
             }
 
             @Override
@@ -145,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 angle_val.setText(String.valueOf(progress));
                 Log.d(TAG, "angle = " + angle.getProgress());
+                setMessage(ChanelEnum.Angle, progress);
             }
 
             @Override
@@ -161,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 position_val.setText(String.valueOf(progress));
                 Log.d(TAG, "position = " + position.getProgress());
+                setMessage(ChanelEnum.Position, progress);
             }
 
             @Override
@@ -193,6 +196,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.Item_search) {
             searchDevices();
+        }
+        if (item.getItemId() == R.id.disconnect && connectedThread != null) {
+            connectThread.cancel();
+            connectedThread.cancel();
+            showListDevices();
         }
         if (item.getItemId() == R.id.Item_exit) {
             finish();
@@ -293,18 +301,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setMessage(ChanelEnum chanel, int value) {
-        buffer[0] = (byte) chanel.ordinal();
-        buffer[1] = (byte) (value >> 8);
-        buffer[2] = (byte) value;
+        if (connectedThread != null && connectThread.isConnected()) {
+            buffer[0] = (byte) chanel.ordinal();
+            buffer[1] = (byte) (value >> 8);
+            buffer[2] = (byte) value;
 
-        if (mOutputStream != null) {
-            try {
-                mOutputStream.write(buffer);
-                mOutputStream.flush();
-            } catch (IOException e) {
-                showToastMessage("Ошибка отправки команды");
-                e.printStackTrace();
-            }
+            connectedThread.write(buffer);
         }
     }
 
@@ -326,8 +328,7 @@ public class MainActivity extends AppCompatActivity {
                 mBluetoothSocket.connect();
                 mOutputStream = mBluetoothSocket.getOutputStream();
                 showToastMessage("Подключение прошло успешно");
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 showToastMessage("Ошибка подключения");
                 e.printStackTrace();
             }
@@ -352,9 +353,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Log.d(TAG, "Нажата кнопка Пуск");
-
-
-
+            setMessage(ChanelEnum.PushBtn, 1);
         }
     };
 
@@ -362,8 +361,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             BluetoothDevice device = mDevices.get(position);
-
-            startConnection(device);
+            if (device != null) {
+                connectThread = new ConnectThread(device);
+                connectThread.start();
+                int v = view.getVisibility();
+                String i = view.getTransitionName();
+            }
         }
     };
 
@@ -371,18 +374,18 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            if(action.equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)){
+            if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)) {
                 Log.d(TAG, "onReceive: ACTION_DISCOVERY_STARTED");
                 showToastMessage("Начат поиск устройств");
                 mProgressDialog = ProgressDialog.show(MainActivity.this, "Поиск устройств", "Пожалуйста подождите...");
             }
-            if(action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
+            if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)) {
                 Log.d(TAG, "onReceive: ACTION_DISCOVERY_FINISHED");
                 showToastMessage("Поиск утройств завершен");
                 mProgressDialog.dismiss();
                 showListDevices();
             }
-            if(action.equals(BluetoothDevice.ACTION_FOUND)){
+            if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                 Log.d(TAG, "onReceive: ACTION_FOUND");
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (device != null) {
@@ -397,13 +400,132 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mRecevier);
         try {
             if (mBluetoothSocket != null) mBluetoothSocket.close();
             if (mOutputStream != null) mOutputStream.close();
+            if(connectThread != null) connectThread.cancel();
+            if(connectedThread != null) connectedThread.cancel();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    private class ConnectThread extends Thread {
+        private BluetoothSocket bluetoothSocket = null;
+        private boolean success = false;
+
+        public ConnectThread(BluetoothDevice device) {
+            try {
+                Method method = device.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
+                bluetoothSocket = (BluetoothSocket) method.invoke(device, 1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void run() {
+            try {
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                bluetoothSocket.connect();
+                success = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Не могу соединиться!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                cancel();
+            }
+            if (success) {
+                connectedThread = new ConnectedThread(bluetoothSocket);
+                connectedThread.start();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Подключение прошло успешно", Toast.LENGTH_SHORT).show();
+//                        View view = getLayoutInflater().inflate(R.layout.list_devices_view, null);
+//                        int viewVisibility = view.getVisibility();
+//                        view.clearAnimation();
+//                        view.setVisibility(View.GONE);
+//                        int jjj = view.getVisibility();
+//                        String lkjl = view.getTransitionName();
+                        //Todo СДЕЛАТЬ, ЧТОБЫ ОКНО СО СПИСКОМ УСТРОЙСТВ ЗАКРЫВАЛОСЬ (ПОКА ПРОСТО ВЫВОДИТСЯ СООБЩЕНИЕ ОБ УДАЧНОМ ПОДКЛЮЧЕНИИ)
+                    }
+                });
+            }
+        }
+
+        public boolean isConnected() {
+            return bluetoothSocket.isConnected();
+        }
+
+        public void cancel(){
+            try {
+                bluetoothSocket.close();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class ConnectedThread extends Thread{
+        private final InputStream inputStream;
+        private final OutputStream outputStream;
+        public ConnectedThread(BluetoothSocket bluetoothSocket) {
+            InputStream inputStream_ = null;
+            OutputStream outputStream_ = null;
+
+            try {
+                inputStream_ = bluetoothSocket.getInputStream();
+                outputStream_ = bluetoothSocket.getOutputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            this.inputStream = inputStream_;
+            this.outputStream = outputStream_;
+        }
+
+        @Override
+        public void run() {
+            //Todo реализация принятия данных по bluetooth
+        }
+
+        public void write(byte[] buffer) {
+            if (outputStream != null) {
+                try {
+                    outputStream.write(buffer);
+                    outputStream.flush();
+                } catch (IOException e) {
+                    showToastMessage("Ошибка отправки команды");
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public void cancel() {
+            try {
+                inputStream.close();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public enum ChanelEnum{
         PushBtn,

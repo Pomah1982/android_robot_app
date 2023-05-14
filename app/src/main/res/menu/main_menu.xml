@@ -5,6 +5,9 @@
         android:id="@+id/Item_search"
         android:title="Поиск устройств" />
     <item
+        android:id="@+id/disconnect"
+        android:title="Отключиться"/>
+    <item
         android:id="@+id/Item_exit"
         android:title="Выход" />
 </menu>
