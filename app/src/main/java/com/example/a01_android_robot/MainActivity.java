@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 speed_1.setText(String.valueOf(progress));
                 Log.d(TAG, "motor_1_speed = " + motor_1.getProgress());
-                setMessage(ChanelEnum.Motor1, progress);
+                setMessage(ChanelEnum.Motor_1, progress);
             }
 
             @Override
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 speed_2.setText(String.valueOf(progress));
                 Log.d(TAG, "motor_2_speed = " + motor_2.getProgress());
-                setMessage(ChanelEnum.Motor2, progress);
+                setMessage(ChanelEnum.Motor_2, progress);
             }
 
             @Override
@@ -362,7 +362,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Log.d(TAG, "Нажата кнопка Пуск");
-            setMessage(ChanelEnum.PushBtn, 1);
+            setMessage(ChanelEnum.Button, 1);
         }
     };
 
@@ -577,11 +577,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     public enum ChanelEnum{
-        PushBtn,
-        Motor1,
-        Motor2,
-        Angle,
-        Position
+        Button("btn"),
+        Motor_1("mt1"),
+        Motor_2("mt2"),
+        Angle("ang"),
+        Position("pos");
+
+        private final String name;
+
+        ChanelEnum(String s) {
+            name = s;
+        }
     }
 }
 
