@@ -187,10 +187,7 @@ public class MainActivity extends AppCompatActivity {
         pushBtn.setOnClickListener(pushBtnListner);
 
         //Устанавливаем первоначальные значения для всех движков
-        motor_1.setProgress(minMotorSpeed + 1);
-        motor_2.setProgress(minMotorSpeed + 1);
-        angle.setProgress((maxAngle + minAngle) / 2);
-        position.setProgress((minPosition + maxPosition) / 2);
+        initialInfrastructure();
 
         enableBluetooth();
     }
@@ -575,6 +572,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void initialInfrastructure() {
+        //Todo реализация установки принятых от робота данных в значения ползунков -- НЕ ПРОВЕРЯЛ КАК РАБОТАЕТ, ЕЛИ НАДО, ТО ОТКОРРЕКТИРОВАТЬ
+        // не уверен, что Chanel.mt1 и пр. возвращает строку при обращении к нему
+        String kk = infrastructureParams.get(ChanelEnum.Motor_1.name());
+        String kk1 = infrastructureParams.get(ChanelEnum.Motor_2.name());
+        String kk2 = infrastructureParams.get(ChanelEnum.Angle.name());
+        String kk3 = infrastructureParams.get(ChanelEnum.Position.name());
+        String kksdfg = ChanelEnum.Motor_1.name;
+        String kk1g = ChanelEnum.Motor_2.name;
+        String kk2ss = ChanelEnum.Angle.name();
+        String kk3f = ChanelEnum.Position.name();
+        motor_1.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Motor_1.name())));
+        motor_2.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Motor_2.name())));
+        angle.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Angle.name())));
+        position.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Position.name())));
+    }
 
     public enum ChanelEnum{
         Button("btn"),
