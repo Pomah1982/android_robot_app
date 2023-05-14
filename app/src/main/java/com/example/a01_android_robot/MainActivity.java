@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,12 +21,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.ref.Reference;
+import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
+import java.sql.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<BluetoothDevice> mDevices = new ArrayList<>();
     private ListView listDevices;
     private DeviceListAdapter mDeviceListAdapter;
+    private BluetoothSocket mBluetoothSocket;
+    private OutputStream mOutputStream;
+
+    private byte[] buffer = new byte[3];
 
     private int minMotorSpeed = 800;
     private int maxMotorSeed = 2300;
@@ -100,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 speed_1.setText(String.valueOf(progress));
                 Log.d(TAG, "motor_1_speed = " + motor_1.getProgress());
+
             }
 
             @Override
@@ -211,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "searchDevices: начинаем поиск утройств");
             bluetoothAdapter.startDiscovery();
         }
-        if (bluetoothAdapter.isDiscovering()){
+        if (bluetoothAdapter.isDiscovering()) {
             Log.d(TAG, "searchDevices: поиск уже был запущен, перезапускаем его еще раз");
             bluetoothAdapter.cancelDiscovery();
             bluetoothAdapter.startDiscovery();
@@ -223,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(mRecevier, filter);
     }
 
-    private void showListDevices(){
+    private void showListDevices() {
         Log.d(TAG, "showListDevices()");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Найденные устройства");
@@ -231,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
         View view = getLayoutInflater().inflate(R.layout.list_devices_view, null);
         listDevices = view.findViewById(R.id.list_devices);
         listDevices.setAdapter(mDeviceListAdapter);
+        listDevices.setOnItemClickListener(ItemOnClickListener);
 
         builder.setView(view);
         builder.setNegativeButton("OK", null);
@@ -238,12 +252,12 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void checkPermissionLocation(){
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
+    private void checkPermissionLocation() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             int check = checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION);
             check += checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION);
-            if(check != 0){
-                requestPermissions(new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1002);
+            if (check != 0) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1002);
             }
         }
     }
@@ -278,7 +292,49 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showToastMessage(String message){
+    private void setMessage(ChanelEnum chanel, int value) {
+        buffer[0] = (byte) chanel.ordinal();
+        buffer[1] = (byte) (value >> 8);
+        buffer[2] = (byte) value;
+
+        if (mOutputStream != null) {
+            try {
+                mOutputStream.write(buffer);
+                mOutputStream.flush();
+            } catch (IOException e) {
+                showToastMessage("Ошибка отправки команды");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void startConnection(BluetoothDevice device) {
+        if (device != null) {
+            try {
+                Method method = device.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
+                mBluetoothSocket = (BluetoothSocket) method.invoke(device, 1);
+                if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                mBluetoothSocket.connect();
+                mOutputStream = mBluetoothSocket.getOutputStream();
+                showToastMessage("Подключение прошло успешно");
+            }
+            catch (Exception e){
+                showToastMessage("Ошибка подключения");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void showToastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -297,6 +353,17 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             Log.d(TAG, "Нажата кнопка Пуск");
 
+
+
+        }
+    };
+
+    private final AdapterView.OnItemClickListener ItemOnClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            BluetoothDevice device = mDevices.get(position);
+
+            startConnection(device);
         }
     };
 
@@ -326,4 +393,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            if (mBluetoothSocket != null) mBluetoothSocket.close();
+            if (mOutputStream != null) mOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public enum ChanelEnum{
+        PushBtn,
+        Motor1,
+        Motor2,
+        Angle,
+        Position
+    }
 }
+
