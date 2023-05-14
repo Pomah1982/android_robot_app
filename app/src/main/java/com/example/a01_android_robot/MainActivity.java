@@ -308,11 +308,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setMessage(ChanelEnum chanel, int value) {
         if (connectedThread != null && connectThread.isConnected()) {
-            buffer[0] = (byte) chanel.ordinal();
-            buffer[1] = (byte) (value >> 8);
-            buffer[2] = (byte) value;
-
-            connectedThread.write(buffer);
+            String msg = chanel.name + ":" + value;
+            connectedThread.write(msg.getBytes());
+            Log.d(TAG, msg);
         }
     }
 
