@@ -28,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -50,8 +51,10 @@ public class MainActivity extends AppCompatActivity {
     private OutputStream mOutputStream;
     private ConnectThread connectThread;
     private ConnectedThread connectedThread;
+    private ProgressDialog progressDialog;
 
-    private byte[] buffer = new byte[3];
+    private byte[] outputBuffer = new byte[3];
+    private ByteBuffer inputBuffer = ByteBuffer.allocate(14);
 
     private int minMotorSpeed = 800;
     private int maxMotorSeed = 2300;
@@ -72,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
         angle = findViewById(R.id.angle);
         position = findViewById(R.id.position);
         pushBtn = findViewById(R.id.pushBtn);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setTitle("Соединение...");
+        progressDialog.setMessage("Подождите пожалуйста...");
 
         //Инициализируем все остальные элементы
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -419,6 +426,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Method method = device.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
                 bluetoothSocket = (BluetoothSocket) method.invoke(device, 1);
+                progressDialog.show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -439,7 +447,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 bluetoothSocket.connect();
                 success = true;
+                progressDialog.dismiss();
             } catch (IOException e) {
+                progressDialog.dismiss();
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {
                     @Override
@@ -484,6 +494,7 @@ public class MainActivity extends AppCompatActivity {
     private class ConnectedThread extends Thread{
         private final InputStream inputStream;
         private final OutputStream outputStream;
+        private boolean isConnected = false;
         public ConnectedThread(BluetoothSocket bluetoothSocket) {
             InputStream inputStream_ = null;
             OutputStream outputStream_ = null;
@@ -497,6 +508,7 @@ public class MainActivity extends AppCompatActivity {
 
             this.inputStream = inputStream_;
             this.outputStream = outputStream_;
+            isConnected = true;
         }
 
         @Override
@@ -518,6 +530,7 @@ public class MainActivity extends AppCompatActivity {
 
         public void cancel() {
             try {
+                isConnected = false;
                 inputStream.close();
                 outputStream.close();
             } catch (IOException e) {
