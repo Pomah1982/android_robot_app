@@ -186,8 +186,8 @@ public class MainActivity extends AppCompatActivity {
 
         pushBtn.setOnClickListener(pushBtnListner);
 
-        //Устанавливаем первоначальные значения для всех движков
-        initialInfrastructure();
+//        //Устанавливаем первоначальные значения для всех движков
+//        initialInfrastructure();
 
         enableBluetooth();
     }
@@ -462,6 +462,9 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        //Запрашиваем у робота его текущие настройки для обновления в android
+                        setMessage(ChanelEnum.Get, 0);
+
                         Toast.makeText(MainActivity.this, "Подключение прошло успешно", Toast.LENGTH_SHORT).show();
 //                        View view = getLayoutInflater().inflate(R.layout.list_devices_view, null);
 //                        int viewVisibility = view.getVisibility();
@@ -588,6 +591,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public enum ChanelEnum{
+        //Запрос получения всех параметров робота для обновления значений на android
+        Get("get"),
         Button("btn"),
         Motor_1("mt1"),
         Motor_2("mt2"),
