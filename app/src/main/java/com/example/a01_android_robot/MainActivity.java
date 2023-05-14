@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private ConnectedThread connectedThread;
     private ProgressDialog progressDialog;
 
-    private byte[] outputBuffer = new byte[3];
-    private ByteBuffer inputBuffer = ByteBuffer.allocate(14);
+    private HashMap<String, String> infrastructureParams = new HashMap<String, String>() {
+        {put(ChanelEnum.Motor_1.name(), "801");put(ChanelEnum.Motor_2.name(), "801");put(ChanelEnum.Angle.name(), "90");put(ChanelEnum.Position.name(), "90");}
+    };
 
     private int minMotorSpeed = 800;
     private int maxMotorSeed = 2300;
@@ -513,7 +515,41 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            //Todo реализация принятия данных по bluetooth
+            //todo https://www.youtube.com/watch?v=pPjiBPUB0wo 7:14
+            BufferedInputStream bis = new BufferedInputStream(inputStream);
+            StringBuffer buffer = new StringBuffer();
+
+            while (isConnected) {
+                try {
+                    char byte_ = (char) bis.read();
+                    buffer.append(byte_);
+                    int eof = buffer.indexOf("\r\n");
+                    if(eof > 0){
+                        parseReciviedDataAndSetInfrParams(buffer.toString());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                initialInfrastructure();
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            try { bis.close(); }
+            catch (IOException e) { e.printStackTrace(); }
+        }
+
+        //Парсит полученные от робота данные и устанавливает полученные параметры в HashMap infrastructureParams
+        private void parseReciviedDataAndSetInfrParams(String data) {
+            //Todo НАДО РЕАЛИЗОВАТЬ ПАРСИНГ ПРИШЕДШЕЙ СТРОКИ
+            String[] pais = data.split("\\|");
+            for (String pair: pais) {
+                String[] keyVal = pair.split(":");
+                infrastructureParams.put(keyVal[0], keyVal[1]);
+            }
         }
 
         public void write(byte[] buffer) {
