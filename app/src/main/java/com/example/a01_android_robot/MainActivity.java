@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setMessage(ChanelEnum chanel, int value) {
         if (connectedThread != null && connectThread.isConnected()) {
-            String msg = chanel.name + ":" + value;
+            String msg = value + chanel.name;
             connectedThread.write(msg.getBytes());
             Log.d(TAG, msg);
         }
@@ -592,12 +592,12 @@ public class MainActivity extends AppCompatActivity {
 
     public enum ChanelEnum{
         //Запрос получения всех параметров робота для обновления значений на android
-        Get("get"),
-        Button("btn"),
-        Motor_1("mt1"),
-        Motor_2("mt2"),
-        Angle("ang"),
-        Position("pos");
+        Get("g"),
+        Button("b"),
+        Motor_1("m"),
+        Motor_2("n"),
+        Angle("a"),
+        Position("p");
 
         private final String name;
 
