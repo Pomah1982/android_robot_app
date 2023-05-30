@@ -16,9 +16,8 @@
             android:id="@+id/speed_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="25sp"/>
+            android:textSize="20sp"/>
 
         <SeekBar
             android:id="@+id/motor_1"
@@ -36,9 +35,8 @@
             android:id="@+id/speed_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="25sp"/>
+            android:textSize="20sp"/>
 
         <SeekBar
             android:id="@+id/motor_2"
@@ -56,9 +54,8 @@
             android:id="@+id/angle_val"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="25sp"/>
+            android:textSize="20sp"/>
 
         <SeekBar
             android:id="@+id/angle"
@@ -76,9 +73,8 @@
             android:id="@+id/position_val"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:textSize="25sp"/>
+            android:textSize="20sp"/>
 
         <SeekBar
             android:id="@+id/position"
@@ -92,12 +88,31 @@
             android:layout_height="wrap_content"
             android:text="Позиция на столе" />
 
+        <TextView
+            android:id="@+id/time_val"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="20sp"/>
+
+        <SeekBar
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Время между выстрелами, мсек" />
+
         <Button
             android:id="@+id/pushBtn"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:text="Пуск"
-            android:layout_marginTop="60dp"/>
+            android:layout_marginTop="40dp"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

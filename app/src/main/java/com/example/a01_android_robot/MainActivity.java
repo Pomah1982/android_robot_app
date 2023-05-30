@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
     private static final int REQ_ENABLE_BLUETOOTH = 1001;
-    private SeekBar motor_1, motor_2, angle, position;
-    private TextView speed_1, speed_2, angle_val, position_val;
+    private SeekBar motor_1, motor_2, angle, position, timePeriod;
+    private TextView speed_1, speed_2, angle_val, position_val, time_val;
     private Button pushBtn;
     private BluetoothAdapter bluetoothAdapter;
     private ProgressDialog mProgressDialog;
@@ -55,15 +55,17 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
 
     private HashMap<String, String> infrastructureParams = new HashMap<String, String>() {
-        {put(ChanelEnum.Motor_1.name(), "801");put(ChanelEnum.Motor_2.name(), "801");put(ChanelEnum.Angle.name(), "90");put(ChanelEnum.Position.name(), "90");}
+        {put(ChanelEnum.Motor_1.name(), "801");put(ChanelEnum.Motor_2.name(), "801");put(ChanelEnum.Angle.name(), "1470");put(ChanelEnum.Position.name(), "1470");}
     };
 
     private int minMotorSpeed = 800;
     private int maxMotorSeed = 2300;
-    private int minPosition = 75;
-    private int maxPosition = 105;
-    private int minAngle = 45;
-    private int maxAngle = 135;
+    private int minPosition = 544;//75;
+    private int maxPosition = 2400;//105;
+    private int minAngle = 544;//45;
+    private int maxAngle = 2400;//135;
+    private int minTime = 500; //2 выстрела в секунду
+    private int maxTime = 3000; // выстрел каждые 3 секунды
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         motor_2 = findViewById(R.id.motor_2);
         angle = findViewById(R.id.angle);
         position = findViewById(R.id.position);
+        timePeriod = findViewById(R.id.time);
         pushBtn = findViewById(R.id.pushBtn);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
@@ -96,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         speed_2 = findViewById(R.id.speed_2);
         angle_val = findViewById(R.id.angle_val);
         position_val = findViewById(R.id.position_val);
+        time_val = findViewById(R.id.time_val);
 
         //Устанавливаем максимальные и минимальные значения для всех ползунков
         motor_1.setMax(maxMotorSeed);
@@ -113,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
         position.setMax(maxPosition);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             position.setMin(minPosition);
+        }
+        timePeriod.setMax(maxTime);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            timePeriod.setMin(minTime);
         }
 
         // Обработчики события изменения положения ползунков
@@ -181,6 +189,25 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        timePeriod.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                time_val.setText(String.valueOf(progress));
+                Log.d(TAG, "time = " + timePeriod.getProgress());
+                setMessage(ChanelEnum.TimePeriod, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
 
@@ -576,18 +603,11 @@ public class MainActivity extends AppCompatActivity {
     private void initialInfrastructure() {
         //Todo реализация установки принятых от робота данных в значения ползунков -- НЕ ПРОВЕРЯЛ КАК РАБОТАЕТ, ЕЛИ НАДО, ТО ОТКОРРЕКТИРОВАТЬ
         // не уверен, что Chanel.mt1 и пр. возвращает строку при обращении к нему
-        String kk = infrastructureParams.get(ChanelEnum.Motor_1.name());
-        String kk1 = infrastructureParams.get(ChanelEnum.Motor_2.name());
-        String kk2 = infrastructureParams.get(ChanelEnum.Angle.name());
-        String kk3 = infrastructureParams.get(ChanelEnum.Position.name());
-        String kksdfg = ChanelEnum.Motor_1.name;
-        String kk1g = ChanelEnum.Motor_2.name;
-        String kk2ss = ChanelEnum.Angle.name();
-        String kk3f = ChanelEnum.Position.name();
         motor_1.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Motor_1.name())));
         motor_2.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Motor_2.name())));
         angle.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Angle.name())));
         position.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Position.name())));
+        timePeriod.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.TimePeriod.name())));
     }
 
     public enum ChanelEnum{
@@ -597,7 +617,8 @@ public class MainActivity extends AppCompatActivity {
         Motor_1("m"),
         Motor_2("n"),
         Angle("a"),
-        Position("p");
+        Position("p"),
+        TimePeriod("t");
 
         private final String name;
 
