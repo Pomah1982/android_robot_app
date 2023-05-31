@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.res.TypedArrayUtils;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -32,8 +33,10 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -546,11 +549,11 @@ public class MainActivity extends AppCompatActivity {
 
             while (isConnected) {
                 try {
-                    char byte_ = (char) bis.read();
-                    buffer.append(byte_);
-                    int eof = buffer.indexOf("\r\n");
-                    if(eof > 0){
+                    int bytes = (char) bis.read();
+                    if (bytes != 101) {buffer.append((char)bytes);}// если принятый символ не является 'e'(используется как конец передачи), то добавляем его в буфер
+                    else {  // если принятый символ == 'e', то передача данных завершена. Приступаем к парсингу полученной строки
                         parseReciviedDataAndSetInfrParams(buffer.toString());
+                        buffer.delete(0,buffer.length());
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -603,11 +606,16 @@ public class MainActivity extends AppCompatActivity {
     private void initialInfrastructure() {
         //Todo реализация установки принятых от робота данных в значения ползунков -- НЕ ПРОВЕРЯЛ КАК РАБОТАЕТ, ЕЛИ НАДО, ТО ОТКОРРЕКТИРОВАТЬ
         // не уверен, что Chanel.mt1 и пр. возвращает строку при обращении к нему
-        motor_1.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Motor_1.name())));
-        motor_2.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Motor_2.name())));
-        angle.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Angle.name())));
-        position.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.Position.name())));
-        timePeriod.setProgress(Short.parseShort(infrastructureParams.get(ChanelEnum.TimePeriod.name())));
+        int tmp = Short.parseShort(infrastructureParams.get("m"/*ChanelEnum.Motor_1.name()*/));
+        motor_1.setProgress(tmp == 0 ? minMotorSpeed + 1 : tmp);
+        tmp = Short.parseShort(infrastructureParams.get("n"/*ChanelEnum.Motor_2.name()*/));
+        motor_2.setProgress(tmp == 0 ? minMotorSpeed + 1 : tmp);
+        tmp = Short.parseShort(infrastructureParams.get("a"/*ChanelEnum.Angle.name()*/));
+        angle.setProgress(tmp == 0 ? (minAngle + maxAngle)/ 2 : tmp);
+        tmp = Short.parseShort(infrastructureParams.get("p"/*ChanelEnum.Position.name()*/));
+        position.setProgress(tmp == 0 ? (minPosition + maxPosition)/ 2 : tmp);
+        tmp = Short.parseShort(infrastructureParams.get("t"/*ChanelEnum.TimePeriod.name()*/));
+        timePeriod.setProgress(tmp == 0 ? minTime + 1 : tmp);
     }
 
     public enum ChanelEnum{
