@@ -12,6 +12,37 @@
         android:orientation="vertical"
         android:padding="20dp">
 
+        <com.google.android.material.slider.Slider
+            android:id="@+id/spinSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stepSize="10"
+            android:valueFrom="-120"
+            android:valueTo="120"
+            android:layout_marginTop="40dp"/>
+
+        <com.google.android.material.slider.RangeSlider
+            android:id="@+id/speedSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stepSize="10"
+            android:valueFrom="850"
+            android:valueTo="970"
+            app:values="@array/rangeSliderValues"
+            app:layout_constraintWidth_default="wrap"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <CheckBox
+            android:id="@+id/is_used"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"/>
+
+
+
         <TextView
             android:id="@+id/speed_1"
             android:layout_width="match_parent"

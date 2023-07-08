@@ -60,12 +60,14 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, String> infrastructureParams = new HashMap<String, String>() {
         {put(ChanelEnum.Motor_1.name(), "801");put(ChanelEnum.Motor_2.name(), "801");put(ChanelEnum.Angle.name(), "1470");put(ChanelEnum.Position.name(), "1470");}
     };
+    //Запрошены лимиты - это первый запрос к STM
+    private boolean limitsRequested;
 
     private int minMotorSpeed = 800;
     private int maxMotorSeed = 2300;
-    private int minPosition = 544;//75;
+    private int minPosition = 400;//75;
     private int maxPosition = 2400;//105;
-    private int minAngle = 544;//45;
+    private int minAngle = 400;//45;
     private int maxAngle = 2400;//135;
     private int minTime = 500; //2 выстрела в секунду
     private int maxTime = 3000; // выстрел каждые 3 секунды
@@ -104,27 +106,27 @@ public class MainActivity extends AppCompatActivity {
         position_val = findViewById(R.id.position_val);
         time_val = findViewById(R.id.time_val);
 
-        //Устанавливаем максимальные и минимальные значения для всех ползунков
-        motor_1.setMax(maxMotorSeed);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            motor_1.setMin(minMotorSpeed);
-        }
-        motor_2.setMax(maxMotorSeed);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            motor_2.setMin(minMotorSpeed);
-        }
-        angle.setMax(maxAngle);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            angle.setMin(minAngle);
-        }
-        position.setMax(maxPosition);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            position.setMin(minPosition);
-        }
-        timePeriod.setMax(maxTime);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            timePeriod.setMin(minTime);
-        }
+//        //Устанавливаем максимальные и минимальные значения для всех ползунков
+//        motor_1.setMax(maxMotorSeed);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            motor_1.setMin(minMotorSpeed);
+//        }
+//        motor_2.setMax(maxMotorSeed);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            motor_2.setMin(minMotorSpeed);
+//        }
+//        angle.setMax(maxAngle);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            angle.setMin(minAngle);
+//        }
+//        position.setMax(maxPosition);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            position.setMin(minPosition);
+//        }
+//        timePeriod.setMax(maxTime);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            timePeriod.setMin(minTime);
+//        }
 
         // Обработчики события изменения положения ползунков
         motor_1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -493,7 +495,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         //Запрашиваем у робота его текущие настройки для обновления в android
-                        setMessage(ChanelEnum.Get, 0);
+                        setMessage(ChanelEnum.Limits, 0);
+                        limitsRequested = true;
+//                        setMessage(ChanelEnum.Get, 0);
 
                         Toast.makeText(MainActivity.this, "Подключение прошло успешно", Toast.LENGTH_SHORT).show();
 //                        View view = getLayoutInflater().inflate(R.layout.list_devices_view, null);
@@ -552,14 +556,22 @@ public class MainActivity extends AppCompatActivity {
                     int bytes = (char) bis.read();
                     if (bytes != 101) {buffer.append((char)bytes);}// если принятый символ не является 'e'(используется как конец передачи), то добавляем его в буфер
                     else {  // если принятый символ == 'e', то передача данных завершена. Приступаем к парсингу полученной строки
-                        parseReciviedDataAndSetInfrParams(buffer.toString());
-                        buffer.delete(0,buffer.length());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                initialInfrastructure();
-                            }
-                        });
+                        if (limitsRequested) {
+                            parseReceivedDataAndSetLimits(buffer.toString().split("\\|"));// парсим и устанавливаем лимиты
+                            limitsRequested = false;    //Сбрасываем флаг установки лимитов
+                            setMessage(ChanelEnum.Get, 0); //После получения данных о лимитах делаем запрос на STM для получения текущих значений инфраструктуры
+                        }
+                        else {//Если это последующие запросы, то устанавливаем значения инфраструктуры
+                            parseReciviedDataAndSetInfrParams(buffer.toString());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    initialInfrastructure();
+                                }
+                            });
+                        }
+
+                        buffer.delete(0,buffer.length());//Очищаем буфер для предотвращения дополнения старых данных вновь полученными
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -572,11 +584,42 @@ public class MainActivity extends AppCompatActivity {
 
         //Парсит полученные от робота данные и устанавливает полученные параметры в HashMap infrastructureParams
         private void parseReciviedDataAndSetInfrParams(String data) {
-            //Todo НАДО РЕАЛИЗОВАТЬ ПАРСИНГ ПРИШЕДШЕЙ СТРОКИ
-            String[] pais = data.split("\\|");
-            for (String pair: pais) {
-                String[] keyVal = pair.split(":");
+            String[] units = data.split("\\|");
+            for (String unit: units) {
+                String[] keyVal = unit.split(":");
                 infrastructureParams.put(keyVal[0], keyVal[1]);
+            }
+        }
+
+        //Парсит полученные от робота данные уже разделенные по символу "|" и устанавливает значения лимитов для ползунков
+        private void parseReceivedDataAndSetLimits(String[] units){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    for (String unit: units) {
+                        String[] keyAndLimits = unit.split(":");
+                        int min = Short.parseShort(keyAndLimits[1]);
+                        int max = Short.parseShort(keyAndLimits[2]);
+                        setLimits(keyAndLimits[0], min,max);
+                    }
+                }
+            });
+        }
+
+        public void setLimits(String key, int min, int max){
+            //Устанавливаем максимальные и минимальные значения для всех ползунков
+            SeekBar infItem;
+            switch (key){
+                case "m": infItem = motor_1; break;
+                case "n": infItem = motor_2; break;
+                case "a": infItem = angle; break;
+                case "p": infItem = position; break;
+                case "t": infItem = timePeriod; break;
+                default: return;
+            }
+            infItem.setMax(max);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                infItem.setMin(min);
             }
         }
 
@@ -620,6 +663,7 @@ public class MainActivity extends AppCompatActivity {
 
     public enum ChanelEnum{
         //Запрос получения всех параметров робота для обновления значений на android
+        Limits("l"),
         Get("g"),
         Button("b"),
         Motor_1("m"),

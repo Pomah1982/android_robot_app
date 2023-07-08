@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">01_android_robot</string>
+    <string-array name="rangeSliderValues">
+        <item>890</item>
+        <item>900</item>
+    </string-array>
 </resources>
