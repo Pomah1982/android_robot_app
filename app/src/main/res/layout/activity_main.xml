@@ -16,39 +16,65 @@
             android:id="@+id/spinSlider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:contentDescription="spinSlider"
             android:stepSize="10"
             android:valueFrom="-120"
             android:valueTo="120"
-            android:layout_marginTop="40dp"/>
+            app:labelBehavior="visible" />
 
-        <com.google.android.material.slider.RangeSlider
-            android:id="@+id/speedSlider"
+        <TextView
+            android:id="@+id/spinLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Вращение" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/speedSlider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="speedSlider"
             android:stepSize="10"
             android:valueFrom="850"
             android:valueTo="970"
-            app:values="@array/rangeSliderValues"
-            app:layout_constraintWidth_default="wrap"
+            app:labelBehavior="visible"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_default="wrap"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_default="wrap" />
+
+        <TextView
+            android:id="@+id/speedLimitsLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сила" />
+
+        <CheckBox
+            android:id="@+id/is_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Настройка минимума скорости" />
 
         <CheckBox
             android:id="@+id/is_used"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"/>
+            android:text="В игре" />
 
-
-
-        <TextView
-            android:id="@+id/speed_1"
+        <Button
+            android:id="@+id/saveBtn"
             android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Сохранить настройки" />
+
+        <!--        <TextView
+            android:id="@+id/speed_1"
+            android:layout_width="265dp"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
         <SeekBar
             android:id="@+id/motor_1"
@@ -79,20 +105,20 @@
             android:id="@+id/textView6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Нижний мотор" />
+            android:text="Нижний мотор" />-->
 
         <TextView
             android:id="@+id/angle_val"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
         <SeekBar
             android:id="@+id/angle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"/>
+            android:padding="10dp" />
 
         <TextView
             android:id="@+id/textView7"
@@ -105,13 +131,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
         <SeekBar
             android:id="@+id/position"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"/>
+            android:padding="10dp" />
 
         <TextView
             android:id="@+id/textView8"
@@ -124,13 +150,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
         <SeekBar
             android:id="@+id/time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"/>
+            android:padding="10dp" />
 
         <TextView
             android:id="@+id/textView9"
@@ -142,8 +168,14 @@
             android:id="@+id/pushBtn"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:text="Пуск"
-            android:layout_marginTop="40dp"/>
+            android:layout_marginTop="40dp"
+            android:text="Пуск" />
+
+        <CheckBox
+            android:id="@+id/isSetState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Режим настроек" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
