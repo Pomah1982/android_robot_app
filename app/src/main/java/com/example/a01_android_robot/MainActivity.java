@@ -77,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
     private int maxAngle = 2400;//135;
     private int minTime = 500; //2 выстрела в секунду
     private int maxTime = 3000; // выстрел каждые 3 секунды
+    private int speedMin = 850; //значение минимума скорости, необходимое при смене режима настроек с минимума на максимум
+    private int speedMax = 970; //значение максимума скорости, необходимое при смене режима настроек с минимума на максимум
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,10 +197,16 @@ public class MainActivity extends AppCompatActivity {
                     public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
                         if (is_min.isChecked()){   // если это установка минимального значения
                             Log.d(TAG, "minSpeed = " + value);
+                            if(value > speedMax && fromUser) value = speedMax;
+                            speedMin = (int)value;
+                            speedSlider.setValue(value);
                             setMessage(ChanelEnum.SpeedStart, (int)value);
                         }
                         else {  //Если это максимальное значение
                             Log.d(TAG, "maxSpeed = " + value);
+                            if(value < speedMin && fromUser) value = speedMin;
+                            speedMax = (int)value;
+                            speedSlider.setValue(value);
                             setMessage(ChanelEnum.SpeedEnd, (int)value);
                         }
                     }
