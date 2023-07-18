@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.res.TypedArrayUtils;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -27,34 +26,32 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
     private static final int REQ_ENABLE_BLUETOOTH = 1001;
-    private SeekBar /*motor_1, motor_2,*/ angle, position, timePeriod;
-    private Slider spinSlider, speedSlider;
+    //private SeekBar /*motor_1, motor_2,*/ angle, position, timePeriod;
+    private Slider angle, position, timePeriod, spinSlider, speedSlider;
     private CheckBox is_used;
     private CheckBox is_min;
+    private CheckBox isSetState;
     private TextView /*speed_1, speed_2,*/ angle_val, position_val, time_val;
     private Button pushBtn;
+    private Button saveBtn;
+    private boolean startMode = false;
     private BluetoothAdapter bluetoothAdapter;
     private ProgressDialog mProgressDialog;
     private ArrayList<BluetoothDevice> mDevices = new ArrayList<>();
@@ -92,12 +89,14 @@ public class MainActivity extends AppCompatActivity {
 //        motor_2 = findViewById(R.id.motor_2);
         is_used = findViewById(R.id.is_used);
         is_min = findViewById(R.id.is_min);
+        isSetState = findViewById(R.id.isSetState);
         spinSlider = findViewById(R.id.spinSlider);
         speedSlider = findViewById(R.id.speedSlider);
         angle = findViewById(R.id.angle);
         position = findViewById(R.id.position);
         timePeriod = findViewById(R.id.time);
         pushBtn = findViewById(R.id.pushBtn);
+        saveBtn = findViewById(R.id.saveBtn);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Соединение...");
@@ -115,9 +114,9 @@ public class MainActivity extends AppCompatActivity {
         //Инициализируем все отображалки значений ползунков
 //        speed_1 = findViewById(R.id.speed_1);
 //        speed_2 = findViewById(R.id.speed_2);
-        angle_val = findViewById(R.id.angle_val);
-        position_val = findViewById(R.id.position_val);
-        time_val = findViewById(R.id.time_val);
+//        angle_val = findViewById(R.id.angle_val);
+//        position_val = findViewById(R.id.position_val);
+//        time_val = findViewById(R.id.time_val);
 
 //        //Устанавливаем максимальные и минимальные значения для всех ползунков
 //        motor_1.setMax(maxMotorSeed);
@@ -182,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
                 new Slider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                Log.d(TAG, "spin = " + value);
+                setMessage(ChanelEnum.Spin, (int)value);
+
 //////////////////////////////////Реализовать обработку события перемещения движков слайдера
             }
         });
@@ -199,76 +201,48 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "maxSpeed = " + value);
                             setMessage(ChanelEnum.SpeedEnd, (int)value);
                         }
-                        //при любом изменении значения лимитов скоростей снимаем флаг использования данных значений,
-                        // чтоб пересохранить их в дальнейшем выбором в соответствующеи checBox-е
-                        is_used.setChecked(false);
                     }
                 });
 
 
         //Событие смены угла атаки
-        angle.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        angle.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                angle_val.setText(String.valueOf(progress));
-                Log.d(TAG, "angle = " + angle.getProgress());
-                setMessage(ChanelEnum.Angle, progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                Log.d(TAG, "angle = " + value);
+                setMessage(ChanelEnum.Angle, (int)value);
             }
         });
 
         //Смена позиции
-        position.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        position.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                position_val.setText(String.valueOf(progress));
-                Log.d(TAG, "position = " + position.getProgress());
-                setMessage(ChanelEnum.Position, progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                Log.d(TAG, "position = " + value);
+                setMessage(ChanelEnum.Position, (int)value);
             }
         });
 
         //Смена интервала времени между выстрелами
-        timePeriod.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        timePeriod.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                time_val.setText(String.valueOf(progress));
-                Log.d(TAG, "time = " + timePeriod.getProgress());
-                setMessage(ChanelEnum.TimePeriod, progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                Log.d(TAG, "position = " + value);
+                setMessage(ChanelEnum.TimePeriod, (int)value);
             }
         });
 
-        //Обработка установка обработчика события нажатия на кнопку
+        //Обработка установка обработчика события нажатия на кнопку Пуск/Стоп
         pushBtn.setOnClickListener(pushBtnListner);
+        saveBtn.setOnClickListener(saveBtnListner);
 
-        //Установка обработчика события для checkBox выбора параметра сила/spin
+
+        //Установка обработчика события для checkBox включения/выключения данной настройки в игру
         is_used.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                Log.d(TAG, "is_used = " + isChecked);
+                setMessage(ChanelEnum.IsUsed, isChecked ? 1 : 0);
 //реализовать обработку checkBox
             }
         });
@@ -283,6 +257,24 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     is_min.setText("Настройка максимума скорости");
                 }
+                setMessage(ChanelEnum.IsMin, isChecked ? 1 : 0);
+                Log.d(TAG, "is_min = " + isChecked);
+            }
+        });
+
+        //Установка обработчика события для checkBox включения/выключения режима настроек
+        isSetState.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    isSetState.setText("Режим настроек");
+                }
+                else{
+                    isSetState.setText("Рабочий режим");
+                }
+
+                setMessage(ChanelEnum.IsSetState, isChecked ? 1 : 0);
+                Log.d(TAG, "isSetState = " + isChecked);
             }
         });
 
@@ -291,6 +283,27 @@ public class MainActivity extends AppCompatActivity {
 
         enableBluetooth();
     }
+
+
+    //Обработчик события нажатия на кнопку "Пуск"
+    private View.OnClickListener pushBtnListner = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            startMode = !startMode;
+            setMessage(ChanelEnum.Start, startMode ? 1 : 0);
+            pushBtn.setText(startMode ? "Стоп" : "Пуск");
+            Log.d(TAG, "Нажата кнопка Пуск, со значением " + startMode);
+        }
+    };
+
+    //Обработчик события нажатия на кнопку "Сохранить"
+    private View.OnClickListener saveBtnListner = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setMessage(ChanelEnum.Save, 1);
+            Log.d(TAG, "Нажата кнопка Сохранить");
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -451,15 +464,6 @@ public class MainActivity extends AppCompatActivity {
             enableBluetooth();
         }
     }
-
-    //Обработчик события нажатия на кнопку "Пуск"
-    private View.OnClickListener pushBtnListner = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.d(TAG, "Нажата кнопка Пуск");
-            setMessage(ChanelEnum.Button, 1);
-        }
-    };
 
     private final AdapterView.OnItemClickListener ItemOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
@@ -678,43 +682,39 @@ public class MainActivity extends AppCompatActivity {
             //Устанавливаем максимальные и минимальные значения для всех ползунков
 //            SeekBar infItem;
             switch (key){
-//                case "m": infItem = motor_1; break;
-//                case "n": infItem = motor_2; break;
-//                case "a": infItem = angle; break;
-//                case "p": infItem = position; break;
-//                case "t": infItem = timePeriod; break;
                 case "a":
-                    angle.setMax(max);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        angle.setMin(min);
-                    }
+                    angle.setValueFrom(min);
+                    angle.setValueTo(max);
+                    angle.setValue(min);
+                    angle.setStepSize(10);
                     break;
                 case "p":
-                    position.setMax(max);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        position.setMin(min);
-                    }
+                    position.setValueFrom(min);
+                    position.setValueTo(max);
+                    position.setValue(min);
+                    position.setStepSize(10);
                     break;
                 case "t":
-                    timePeriod.setMax(max);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        timePeriod.setMin(min);
-                    }
+                    timePeriod.setValueFrom(min);
+                    timePeriod.setValueTo(max);
+                    timePeriod.setValue(min);
+                    timePeriod.setStepSize(100);
                     break;
                 case "r":
                     spinSlider.setValueFrom(min);
                     spinSlider.setValueTo(max);
+                    spinSlider.setValue(min);
+                    spinSlider.setStepSize(10);
                     break;
-                case "s":
+                case "x":
+                    is_min.setChecked(true);
                     speedSlider.setValueFrom(min);
                     speedSlider.setValueTo(max);
+                    speedSlider.setValue(min);
+                    speedSlider.setStepSize(10);
                     break;
                 default: return;
             }
-//            infItem.setMax(max);
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                infItem.setMin(min);
-//            }
         }
 
         public void write(byte[] buffer) {
@@ -743,29 +743,27 @@ public class MainActivity extends AppCompatActivity {
     private void initialInfrastructure() {
         //Todo реализация установки принятых от робота данных в значения ползунков -- НЕ ПРОВЕРЯЛ КАК РАБОТАЕТ, ЕЛИ НАДО, ТО ОТКОРРЕКТИРОВАТЬ
         // не уверен, что Chanel.mt1 и пр. возвращает строку при обращении к нему
-        int tmp;
-//        tmp = Short.parseShort(infrastructureParams.get("m"/*ChanelEnum.Motor_1.name()*/));
-//        motor_1.setProgress(tmp == 0 ? minMotorSpeed + 1 : tmp);
-//        tmp = Short.parseShort(infrastructureParams.get("n"/*ChanelEnum.Motor_2.name()*/));
-//        motor_2.setProgress(tmp == 0 ? minMotorSpeed + 1 : tmp);
-        tmp = Short.parseShort(infrastructureParams.get("x"));
         is_min.setChecked(true);
+        isSetState.setChecked(false);
+        int tmp;
+        tmp = Short.parseShort(infrastructureParams.get("x"));
         speedSlider.setValue(tmp);
         tmp = Short.parseShort(infrastructureParams.get("r"));
         spinSlider.setValue(tmp);
-        tmp = Short.parseShort(infrastructureParams.get("a"/*ChanelEnum.Angle.name()*/));
-        angle.setProgress(tmp == 0 ? (minAngle + maxAngle)/ 2 : tmp);
-        tmp = Short.parseShort(infrastructureParams.get("p"/*ChanelEnum.Position.name()*/));
-        position.setProgress(tmp == 0 ? (minPosition + maxPosition)/ 2 : tmp);
-        tmp = Short.parseShort(infrastructureParams.get("t"/*ChanelEnum.TimePeriod.name()*/));
-        timePeriod.setProgress(tmp == 0 ? minTime + 1 : tmp);
+        tmp = Short.parseShort(infrastructureParams.get("a"));
+        angle.setValue(tmp == 0 ? (minAngle + maxAngle)/ 2 : tmp);
+        tmp = Short.parseShort(infrastructureParams.get("p"));
+        position.setValue(tmp == 0 ? (minPosition + maxPosition)/ 2 : tmp);
+        tmp = Short.parseShort(infrastructureParams.get("t"));
+        timePeriod.setValue(tmp == 0 ? minTime + 1 : tmp);
     }
 
     public enum ChanelEnum{
         //Запрос получения всех параметров робота для обновления значений на android
         Limits("l"),
         Get("g"),
-        Button("b"),
+        Start("b"),
+        Save("c"),
         Motor_1("m"),
         Motor_2("n"),
         Angle("a"),
@@ -775,7 +773,8 @@ public class MainActivity extends AppCompatActivity {
         Speed("s"),
         SpeedStart("x"),
         SpeedEnd("y"),
-        IsUsed("i"),
+        IsUsed("u"),
+        IsMin("i"),
         IsSetState("w");
 
         private final String name;

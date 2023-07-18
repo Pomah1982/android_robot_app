@@ -1,5 +1,6 @@
 package com.example.a01_android_robot;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import androidx.core.app.ActivityCompat;
 import java.util.ArrayList;
 
 public class DeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
+    private static final int PERMISSION_REQUEST_CODE = 111111;
     private LayoutInflater mLayoutInflater;
     private int mResourceView;
     public ArrayList<BluetoothDevice> mDevices = new ArrayList<>();
@@ -44,7 +46,7 @@ public class DeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return null;
+            ActivityCompat.requestPermissions((Activity) this.getContext(), new String[]{android.Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST_CODE);
         }
         tvName.setText(device.getName());
         tvAddress.setText(device.getAddress());
