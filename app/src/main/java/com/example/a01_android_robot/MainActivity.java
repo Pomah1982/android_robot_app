@@ -195,19 +195,33 @@ public class MainActivity extends AppCompatActivity {
                 new Slider.OnChangeListener() {
                     @Override
                     public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                        int val = (int)value;
                         if (is_min.isChecked()){   // если это установка минимального значения
                             Log.d(TAG, "minSpeed = " + value);
-                            if(value > speedMax && fromUser) value = speedMax;
-                            speedMin = (int)value;
-                            speedSlider.setValue(value);
-                            setMessage(ChanelEnum.SpeedStart, (int)value);
+                            if(val >= speedMax) {
+                                if(speedMin < speedMax){
+                                    speedMin = speedMax;
+                                    setMessage(ChanelEnum.SpeedStart, speedMin);
+                                }
+                                speedSlider.setValue(speedMax);
+                                return;
+                            }
+                            speedMin = val;
+                            setMessage(ChanelEnum.SpeedStart, val);
                         }
                         else {  //Если это максимальное значение
                             Log.d(TAG, "maxSpeed = " + value);
-                            if(value < speedMin && fromUser) value = speedMin;
-                            speedMax = (int)value;
-                            speedSlider.setValue(value);
-                            setMessage(ChanelEnum.SpeedEnd, (int)value);
+
+                            if(val <= speedMin) {
+                                if(speedMax > speedMin){
+                                    speedMax = speedMin;
+                                    setMessage(ChanelEnum.SpeedEnd, speedMax);
+                                }
+                                speedSlider.setValue(speedMin);
+                                return;
+                            }
+                            speedMax = val;
+                            setMessage(ChanelEnum.SpeedEnd, val);
                         }
                     }
                 });
