@@ -726,7 +726,7 @@ public class MainActivity extends AppCompatActivity {
                     spinSlider.setValueFrom(min);
                     spinSlider.setValueTo(max);
                     spinSlider.setValue(min);
-                    spinSlider.setStepSize(10);
+                    spinSlider.setStepSize(1);
                     break;
                 case "x":
                     is_min.setChecked(true);
