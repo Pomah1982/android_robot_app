@@ -443,7 +443,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setMessage(ChanelEnum chanel, int value) {
         if (connectedThread != null && connectThread.isConnected()) {
-            String msg = value + chanel.name;
+            String msg = value + (chanel == ChanelEnum.Spin ? 4 : 0) + chanel.name;
             connectedThread.write(msg.getBytes());
             Log.d(TAG, msg);
         }
@@ -768,7 +768,7 @@ public class MainActivity extends AppCompatActivity {
         is_min.setChecked(true);
         isSetState.setChecked(false);
         int tmp;
-        tmp = Short.parseShort(infrastructureParams.get("x"));
+        tmp = Short.parseShort(infrastructureParams.get(is_min.isChecked() ? "x" : "y"));
         speedSlider.setValue(tmp);
         tmp = Short.parseShort(infrastructureParams.get("r"));
         spinSlider.setValue(tmp);
