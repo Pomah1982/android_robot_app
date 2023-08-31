@@ -665,7 +665,7 @@ public class MainActivity extends AppCompatActivity {
                             });
                         }
 
-                        buffer.delete(0,buffer.length());//Очищаем буфер для предотвращения дополнения старых данных вновь полученными
+                        buffer = buffer.delete(0,buffer.length());//Очищаем буфер для предотвращения дополнения старых данных вновь полученными
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -705,21 +705,21 @@ public class MainActivity extends AppCompatActivity {
 //            SeekBar infItem;
             switch (key){
                 case "a":
-                    angle.setValueFrom(min);
-                    angle.setValueTo(max);
-                    angle.setValue(min);
+                    angle.setValueFrom(Math.round(min/10)*10);
+                    angle.setValueTo(Math.round(max/10)*10);
+                    angle.setValue(Math.round(min/10)*10);
                     angle.setStepSize(10);
                     break;
                 case "p":
-                    position.setValueFrom(min);
-                    position.setValueTo(max);
-                    position.setValue(min);
+                    position.setValueFrom(Math.round(min/10)*10);
+                    position.setValueTo(Math.round(max/10)*10);
+                    position.setValue(Math.round(min/10)*10);
                     position.setStepSize(10);
                     break;
                 case "t":
-                    timePeriod.setValueFrom(min);
-                    timePeriod.setValueTo(max);
-                    timePeriod.setValue(min);
+                    timePeriod.setValueFrom(Math.round(min/100)*100);
+                    timePeriod.setValueTo(Math.round(max/100)*100);
+                    timePeriod.setValue(Math.round(min/100)*100);
                     timePeriod.setStepSize(100);
                     break;
                 case "r":
@@ -730,9 +730,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case "x":
                     is_min.setChecked(true);
-                    speedSlider.setValueFrom(min);
-                    speedSlider.setValueTo(max);
-                    speedSlider.setValue(min);
+                    speedSlider.setValueFrom(Math.round(min/10)*10);
+                    speedSlider.setValueTo(Math.round(max/10)*10);
+                    speedSlider.setValue(Math.round(min/10)*10);
                     speedSlider.setStepSize(10);
                     break;
                 default: return;
@@ -769,13 +769,13 @@ public class MainActivity extends AppCompatActivity {
         isSetState.setChecked(false);
         int tmp;
         tmp = Short.parseShort(infrastructureParams.get(is_min.isChecked() ? "x" : "y"));
-        speedSlider.setValue(tmp);
+        speedSlider.setValue(Math.round(tmp/10)*10);
         tmp = Short.parseShort(infrastructureParams.get("r"));
         spinSlider.setValue(tmp);
         tmp = Short.parseShort(infrastructureParams.get("a"));
-        angle.setValue(tmp == 0 ? (minAngle + maxAngle)/ 2 : tmp);
+        angle.setValue(Math.round((tmp == 0 ? (minAngle + maxAngle)/ 2 : tmp)/10)*10);
         tmp = Short.parseShort(infrastructureParams.get("p"));
-        position.setValue(tmp == 0 ? (minPosition + maxPosition)/ 2 : tmp);
+        position.setValue(Math.round((tmp == 0 ? (minPosition + maxPosition)/ 2 : tmp)/10)*10);
         tmp = Short.parseShort(infrastructureParams.get("t"));
         timePeriod.setValue(tmp == 0 ? minTime + 1 : tmp);
     }
