@@ -18,14 +18,18 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQ_ENABLE_BLUETOOTH = 1001;
     //private SeekBar /*motor_1, motor_2,*/ angle, position, timePeriod;
     private Slider angle, position, timePeriod, spinSlider, speedSlider;
+    private Slider rateSlider_1, rateSlider_2, rateSlider_3, rateSlider_4,
+            rateSlider_5, rateSlider_6, rateSlider_7, rateSwitcher;
+    private LinearLayout settingsBlock;
+    private LinearLayout workBlock;
     private CheckBox is_used;
     private CheckBox is_min;
     private CheckBox isSetState;
@@ -89,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
         //Инициализируем все ползунки
 //        motor_1 = findViewById(R.id.motor_1);
 //        motor_2 = findViewById(R.id.motor_2);
+        settingsBlock = findViewById(R.id.settingsBlock);
+        workBlock = findViewById(R.id.workBlock);
         is_used = findViewById(R.id.is_used);
         is_min = findViewById(R.id.is_min);
         isSetState = findViewById(R.id.isSetState);
@@ -103,6 +113,15 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Соединение...");
         progressDialog.setMessage("Подождите пожалуйста...");
+        rateSlider_1 = findViewById(R.id.rateSlider_1);
+        rateSlider_2 = findViewById(R.id.rateSlider_2);
+        rateSlider_3 = findViewById(R.id.rateSlider_3);
+        rateSlider_4 = findViewById(R.id.rateSlider_4);
+        rateSlider_5 = findViewById(R.id.rateSlider_5);
+        rateSlider_6 = findViewById(R.id.rateSlider_6);
+        rateSlider_7 = findViewById(R.id.rateSlider_7);
+        rateSwitcher = findViewById(R.id.rateSwitcher);
+
 
         //Инициализируем все остальные элементы
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -290,15 +309,28 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     isSetState.setText("Режим настроек");
+                    settingsBlock.setVisibility(View.VISIBLE);
+                    workBlock.setVisibility(View.GONE);
+                    angle.invalidate();
+                    position.invalidate();
+                    timePeriod.invalidate();
                 }
                 else{
                     isSetState.setText("Рабочий режим");
+                    settingsBlock.setVisibility(View.GONE);
+                    workBlock.setVisibility(View.VISIBLE);
+                    angle.invalidate();
+                    position.invalidate();
+                    timePeriod.invalidate();
                 }
 
                 setMessage(ChanelEnum.IsSetState, isChecked ? 1 : 0);
                 Log.d(TAG, "isSetState = " + isChecked);
             }
         });
+
+        isSetState.setChecked(true);
+        isSetState.setChecked(false);
 
 //        //Устанавливаем первоначальные значения для всех движков
 //        initialInfrastructure();

@@ -10,101 +10,220 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginTop="-20dp"
         android:padding="20dp">
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/spinSlider"
+        <LinearLayout
+            android:id="@+id/settingsBlock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="spinSlider"
-            app:labelBehavior="visible"
-            android:layout_marginBottom="-10dp"/>
+            android:orientation="vertical"
+            >
+            <com.google.android.material.slider.Slider
+                android:id="@+id/spinSlider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="spinSlider"
+                app:labelBehavior="visible"
+                android:layout_marginBottom="-10dp"/>
 
-        <TextView
-            android:id="@+id/spinLabel"
+            <TextView
+                android:id="@+id/spinLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Вращение"
+                android:layout_marginBottom="15dp"/>
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/speedSlider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="speedSlider"
+                app:labelBehavior="visible"
+                android:layout_marginBottom="-10dp"/>
+
+            <TextView
+                android:id="@+id/speedLimitsLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Сила" />
+
+            <CheckBox
+                android:id="@+id/is_min"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Настройка минимума скорости"
+                android:layout_marginBottom="-10dp"/>
+
+            <Button
+                android:id="@+id/saveBtn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="70dp"
+                android:layout_marginBottom="20dp"
+                android:text="Сохранить настройки"/>
+           </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/workBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/rateSlider_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:stepSize="10"
+                    android:valueFrom="0"
+                    android:valueTo="100"
+                    app:labelBehavior="gone"
+                    android:layout_marginBottom="-5dp"/>
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/rateSlider_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:stepSize="10"
+                    android:valueFrom="0"
+                    android:valueTo="100"
+                    app:labelBehavior="gone"
+                    android:layout_marginBottom="-5dp"/>
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/rateSlider_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:stepSize="10"
+                    android:valueFrom="0"
+                    android:valueTo="100"
+                    app:labelBehavior="gone"
+                    android:layout_marginBottom="-5dp"/>
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/rateSlider_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:stepSize="10"
+                    android:valueFrom="0"
+                    android:valueTo="100"
+                    app:labelBehavior="gone"
+                    android:layout_marginBottom="-5dp"/>
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/rateSlider_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:stepSize="10"
+                    android:valueFrom="0"
+                    android:valueTo="100"
+                    app:labelBehavior="gone"
+                    android:layout_marginBottom="-5dp"/>
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/rateSlider_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:stepSize="10"
+                    android:valueFrom="0"
+                    android:valueTo="100"
+                    app:labelBehavior="gone"
+                    android:layout_marginBottom="-5dp"/>
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/rateSlider_7"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:stepSize="10"
+                    android:valueFrom="0"
+                    android:valueTo="100"
+                    app:labelBehavior="gone"
+                    android:layout_marginBottom="-5dp"/>
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/rateSwitcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    app:trackColor="@color/design_default_color_on_primary"
+                    android:layout_marginTop="-15dp"
+                    app:labelBehavior="withinBounds"/>
+
+            </LinearLayout>
+        <View
+            android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Вращение" />
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/speedSlider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="speedSlider"
-            app:labelBehavior="visible"
-            android:layout_marginBottom="-10dp"/>
-
-        <TextView
-            android:id="@+id/speedLimitsLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Сила" />
-
-        <CheckBox
-            android:id="@+id/is_min"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="Настройка минимума скорости"
-            android:layout_marginBottom="-10dp"/>
+            android:layout_height="5dp"
+            android:background="@color/design_default_color_primary"/>
 
         <CheckBox
             android:id="@+id/is_used"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="В игре" />
+            android:text="В игре"
+            android:visibility="gone"/>
 
-        <Button
-            android:id="@+id/saveBtn"
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Сохранить настройки" />
+            android:layout_height="70dp">
 
-        <com.google.android.material.slider.Slider
-            android:id="@+id/angle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="speedSlider"
-            app:labelBehavior="visible"
-            android:layout_marginBottom="-10dp"/>
+            <com.google.android.material.slider.Slider
+                android:id="@+id/angle"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:contentDescription="angle"
+                app:labelBehavior="visible"/>
 
-        <TextView
-            android:id="@+id/textView7"
+            <CheckBox
+                android:id="@+id/angleManual"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="-15dp"
+                android:text="Угол">
+            </CheckBox>
+        </TableRow>
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Угол атаки" />
+            android:layout_height="70dp">
+            <com.google.android.material.slider.Slider
+                android:id="@+id/position"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                app:labelBehavior="visible"/>
 
-        <com.google.android.material.slider.Slider
-            android:id="@+id/position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="speedSlider"
-            app:labelBehavior="visible"
-            android:layout_marginBottom="-10dp"/>
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Позиция на столе" />
+            <CheckBox
+                android:id="@+id/positionManual"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="-15dp"
+                android:text="Позиц.">
+            </CheckBox>
 
-        <com.google.android.material.slider.Slider
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="speedSlider"
-            app:labelBehavior="visible"
-             android:layout_marginBottom="-10dp"/>
-        <TextView
-            android:id="@+id/textView9"
+        </TableRow>
+
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Время между выстрелами, мсек" />
+            android:layout_height="70dp">
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/time"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                app:labelBehavior="visible"/>
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginTop="25dp"
+                android:textSize="18dp"
+                android:text="Время"/>
+
+        </TableRow>
 
         <Button
             android:id="@+id/pushBtn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:text="Пуск" />
 
         <CheckBox
