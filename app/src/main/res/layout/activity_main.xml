@@ -234,13 +234,6 @@
             android:layout_height="5dp"
             android:background="@color/cardview_light_background" />
 
-        <CheckBox
-            android:id="@+id/is_used"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="В игре"
-            android:visibility="gone" />
-
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="70dp">

@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             rateSlider_5, rateSlider_6, rateSlider_7, rateSwitcher;
     private LinearLayout settingsBlock;
     private LinearLayout workBlock;
-    private CheckBox is_used;
+    //Включена настройка минимума скорости
     private CheckBox is_min;
     private CheckBox isSetState;
     private TextView speedLimitsLabel, angle_val, position_val, time_val;
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
 //        motor_2 = findViewById(R.id.motor_2);
         settingsBlock = findViewById(R.id.settingsBlock);
         workBlock = findViewById(R.id.workBlock);
-        is_used = findViewById(R.id.is_used);
         is_min = findViewById(R.id.is_min);
         isSetState = findViewById(R.id.isSetState);
         speedLimitsLabel =findViewById(R.id.speedLimitsLabel);
@@ -280,17 +279,6 @@ public class MainActivity extends AppCompatActivity {
         pushBtn.setOnClickListener(pushBtnListner);
         saveBtn.setOnClickListener(saveBtnListner);
         inGameSetSaveBtn.setOnClickListener(inGameSetSaveBtnListner);
-
-
-        //Установка обработчика события для checkBox включения/выключения данной настройки в игру
-        is_used.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                Log.d(TAG, "is_used = " + isChecked);
-                setMessage(ChanelEnum.IsUsed, isChecked ? 1 : 0);
-//реализовать обработку checkBox
-            }
-        });
 
         //Установка обработчика события для checkBox выбора устанавливаемого значения скорости min\max
         is_min.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
