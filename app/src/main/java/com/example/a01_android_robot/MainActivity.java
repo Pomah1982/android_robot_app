@@ -107,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
         workBlock = findViewById(R.id.workBlock);
         is_min = findViewById(R.id.is_min);
         isSetState = findViewById(R.id.isSetState);
+        angleManual = findViewById(R.id.angleManual);
+        positionManual = findViewById(R.id.positionManual);
         speedLimitsLabel =findViewById(R.id.speedLimitsLabel);
         spinSlider = findViewById(R.id.spinSlider);
         speedSlider = findViewById(R.id.speedSlider);
@@ -326,6 +328,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Обработка события выбора в checkBox ручной настройки угла закручивания
+        angleManual.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setMessage(ChanelEnum.AngleManual, isChecked ? 1 : 0);
+            }
+        });
+
+        //Обработка события выбора в checkBox ручной настройки угла закручивания
+        positionManual.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setMessage(ChanelEnum.PositionManual, isChecked ? 1 : 0);
+            }
+        });
+
+        //Эти две операции необходимы для перерисовки экрана, т.к. сбиваются указатели на слайдерах, расположенных внизу
         isSetState.setChecked(true);
         isSetState.setChecked(false);
 
@@ -848,6 +867,10 @@ public class MainActivity extends AppCompatActivity {
         PositionStart("P"),
         //Конечная (правая) позиция выстрела
         PositionEnd("Q"),
+        //Установка угла вручную
+        AngleManual("A"),
+        //Установка направления выстрела вручную
+        PositionManual("B"),
         //Время между выстрелами
         TimePeriod("t"),
         //Уровень вращения -4<=>4
