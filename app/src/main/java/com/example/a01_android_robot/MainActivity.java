@@ -104,9 +104,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Инициализируем все ползунки
-//        motor_1 = findViewById(R.id.motor_1);
-//        motor_2 = findViewById(R.id.motor_2);
+        //Инициализируем все элементы на экране'
         settingsBlock = findViewById(R.id.settingsBlock);
         workBlock = findViewById(R.id.workBlock);
         is_min = findViewById(R.id.is_min);
@@ -145,71 +143,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mDeviceListAdapter = new DeviceListAdapter(this, R.layout.device_item, mDevices);
-
-        //Инициализируем все отображалки значений ползунков
-//        speed_1 = findViewById(R.id.speed_1);
-//        speed_2 = findViewById(R.id.speed_2);
-//        angle_val = findViewById(R.id.angle_val);
-//        position_val = findViewById(R.id.position_val);
-//        time_val = findViewById(R.id.time_val);
-
-//        //Устанавливаем максимальные и минимальные значения для всех ползунков
-//        motor_1.setMax(maxMotorSeed);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            motor_1.setMin(minMotorSpeed);
-//        }
-//        motor_2.setMax(maxMotorSeed);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            motor_2.setMin(minMotorSpeed);
-//        }
-//        angle.setMax(maxAngle);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            angle.setMin(minAngle);
-//        }
-//        position.setMax(maxPosition);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            position.setMin(minPosition);
-//        }
-//        timePeriod.setMax(maxTime);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            timePeriod.setMin(minTime);
-//        }
-
-        // Обработчики события изменения положения ползунков
-//        motor_1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                speed_1.setText(String.valueOf(progress));
-//                Log.d(TAG, "motor_1_speed = " + motor_1.getProgress());
-//                setMessage(ChanelEnum.Motor_1, progress);
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//            }
-//        });
-
-//        motor_2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                speed_2.setText(String.valueOf(progress));
-//                Log.d(TAG, "motor_2_speed = " + motor_2.getProgress());
-//                setMessage(ChanelEnum.Motor_2, progress);
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//            }
-//        });
-
 
         //Событие смены закручивания
         spinSlider.addOnChangeListener(
