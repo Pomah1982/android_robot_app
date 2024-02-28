@@ -47,12 +47,14 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
     private static final int REQ_ENABLE_BLUETOOTH = 1001;
-    //private SeekBar /*motor_1, motor_2,*/ angle, position, timePeriod;
+
+    private LinearLayout settingsBlock;
+    private LinearLayout workBlock;
+
     private Slider angle, position, timePeriod, spinSlider, speedSlider;
     private Slider rateSlider_1, rateSlider_2, rateSlider_3, rateSlider_4,
             rateSlider_5, rateSlider_6, rateSlider_7, rateSwitcher;
-    private LinearLayout settingsBlock;
-    private LinearLayout workBlock;
+
     //Включена настройка минимума скорости
     private CheckBox is_min;
     //Это режим настроек
@@ -62,10 +64,11 @@ public class MainActivity extends AppCompatActivity {
     //Значение направления выстрела устанавливается вручную
     private CheckBox positionManual;
     private TextView speedLimitsLabel, angle_val, position_val, time_val;
+
     private Button pushBtn;
     private Button saveBtn;
     private Button inGameSetSaveBtn;
-    private boolean startMode = false;
+
     private BluetoothAdapter bluetoothAdapter;
     private ProgressDialog mProgressDialog;
     private ArrayList<BluetoothDevice> mDevices = new ArrayList<>();
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     };
     //Запрошены лимиты - это первый запрос к STM
     private boolean limitsRequested;
+    private boolean startMode = false;
 
     private int minMotorSpeed = 850;
     private int maxMotorSeed = 1200;
