@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox is_used;
     private CheckBox is_min;
     private CheckBox isSetState;
-    private TextView /*speed_1, speed_2,*/ angle_val, position_val, time_val;
+    private TextView speedLimitsLabel, angle_val, position_val, time_val;
     private Button pushBtn;
     private Button saveBtn;
     private boolean startMode = false;
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         is_used = findViewById(R.id.is_used);
         is_min = findViewById(R.id.is_min);
         isSetState = findViewById(R.id.isSetState);
+        speedLimitsLabel =findViewById(R.id.speedLimitsLabel);
         spinSlider = findViewById(R.id.spinSlider);
         speedSlider = findViewById(R.id.speedSlider);
         angle = findViewById(R.id.angle);
@@ -276,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
         //Обработка установка обработчика события нажатия на кнопку Пуск/Стоп
         pushBtn.setOnClickListener(pushBtnListner);
         saveBtn.setOnClickListener(saveBtnListner);
+//        b
 
 
         //Установка обработчика события для checkBox включения/выключения данной настройки в игру
@@ -293,10 +295,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
-                    is_min.setText("Настройка минимума скорости");
+                    speedLimitsLabel.setText("min\nSpeed");
                 }
                 else{
-                    is_min.setText("Настройка максимума скорости");
+                    speedLimitsLabel.setText("max\nSpeed");
                 }
                 setMessage(ChanelEnum.IsMin, isChecked ? 1 : 0);
                 Log.d(TAG, "is_min = " + isChecked);
