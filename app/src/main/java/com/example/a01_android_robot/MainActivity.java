@@ -55,7 +55,12 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout workBlock;
     //Включена настройка минимума скорости
     private CheckBox is_min;
+    //Это режим настроек
     private CheckBox isSetState;
+    //Значение угла закручивания устанавливается вручную
+    private CheckBox angleManual;
+    //Значение направления выстрела устанавливается вручную
+    private CheckBox positionManual;
     private TextView speedLimitsLabel, angle_val, position_val, time_val;
     private Button pushBtn;
     private Button saveBtn;
@@ -823,24 +828,39 @@ public class MainActivity extends AppCompatActivity {
         timePeriod.setValue(tmp == 0 ? minTime + 1 : tmp);
     }
 
+    //Enum команд
     public enum ChanelEnum{
-        //Запрос получения всех параметров робота для обновления значений на android
+        //Запрос лимитов для инфраструктуры
         Limits("l"),
+        //Получить настройки инфрастуктуры
         Get("g"),
+        //Нажата кнопка "Пуск"
         Start("b"),
         Save("c"),
+        //Скорость для верхнего двигателя
         Motor_1("m"),
+        //Скорость для нижнего двигателя
         Motor_2("n"),
+        //Угол поворота пушки
         Angle("a"),
         Position("p"),
+        //Начальная (левая) позиция выстрела
+        PositionStart("P"),
+        //Конечная (правая) позиция выстрела
+        PositionEnd("Q"),
+        //Время между выстрелами
         TimePeriod("t"),
+        //Уровень вращения -4<=>4
         Spin("r"),
-        Speed("s"),
+        //Минимальная скорость вращения двигателя
         SpeedStart("x"),
+        //Максимальная скорость вращения двигателя
         SpeedEnd("y"),
-        IsUsed("u"),
+        //Настраивается минимум скорости
         IsMin("i"),
+        //Приложение находится в режиме настроек
         IsSetState("w"),
+        //Настройки частоты выстрелов по направлениям
         GameSet("G");
 
         private final String name;
