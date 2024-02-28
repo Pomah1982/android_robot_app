@@ -18,21 +18,19 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
 
 import java.io.BufferedInputStream;
@@ -51,9 +49,11 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout settingsBlock;
     private LinearLayout workBlock;
 
-    private Slider angle, position, timePeriod, spinSlider, speedSlider;
-    private Slider rateSlider_1, rateSlider_2, rateSlider_3, rateSlider_4,
-            rateSlider_5, rateSlider_6, rateSlider_7, rateSwitcher;
+    private Slider angle, position, timePeriod, spinSlider, speedSlider,
+            rateSlider_1, rateSlider_2, rateSlider_3, rateSlider_4,
+            rateSlider_5, rateSlider_6, rateSlider_7,
+            rateSwitcher;
+    private RangeSlider positionLimits;
 
     //Включена настройка минимума скорости
     private CheckBox is_min;
@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         rateSlider_6 = findViewById(R.id.rateSlider_6);
         rateSlider_7 = findViewById(R.id.rateSlider_7);
         rateSwitcher = findViewById(R.id.rateSwitcher);
+        positionLimits = findViewById(R.id.positionLimits);
 
 
         //Инициализируем все остальные элементы
@@ -283,6 +284,15 @@ public class MainActivity extends AppCompatActivity {
             public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
                 Log.d(TAG, "position = " + value);
                 setMessage(ChanelEnum.TimePeriod, (int)value);
+            }
+        });
+
+        //Обработка события передвижения ползунков на слайдере границ направления выстрела
+        positionLimits.addOnChangeListener(new RangeSlider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+                setMessage(ChanelEnum.PositionStart, (int)slider.getValueFrom());
+                setMessage(ChanelEnum.PositionEnd, (int)slider.getValueTo());
             }
         });
 
