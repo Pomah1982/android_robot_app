@@ -287,6 +287,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Перемещение ползунка переключения наборов количества выстрелов по направлениям
+        rateSwitcher.addOnChangeListener(new Slider.OnChangeListener(){
+            @Override
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                setMessage(ChanelEnum.RateSwitcher, (int)value);
+            }
+        });
+
         //Обработка события передвижения ползунков на слайдере границ направления выстрела
         positionLimits.addOnChangeListener(new RangeSlider.OnChangeListener() {
             @Override
@@ -897,6 +905,8 @@ public class MainActivity extends AppCompatActivity {
         IsMin("i"),
         //Приложение находится в режиме настроек
         IsSetState("w"),
+        //Переключение наборов частот выстрелов по направлениям
+        RateSwitcher("F"),
         //Настройки частоты выстрелов по направлениям
         GameSet("G");
 
