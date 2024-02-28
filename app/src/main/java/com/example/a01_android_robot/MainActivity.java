@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView speedLimitsLabel, angle_val, position_val, time_val;
     private Button pushBtn;
     private Button saveBtn;
+    private Button inGameSetSaveBtn;
     private boolean startMode = false;
     private BluetoothAdapter bluetoothAdapter;
     private ProgressDialog mProgressDialog;
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         timePeriod = findViewById(R.id.time);
         pushBtn = findViewById(R.id.pushBtn);
         saveBtn = findViewById(R.id.saveBtn);
+        inGameSetSaveBtn = findViewById(R.id.inGameSetSaveBtn);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Соединение...");
@@ -277,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
         //Обработка установка обработчика события нажатия на кнопку Пуск/Стоп
         pushBtn.setOnClickListener(pushBtnListner);
         saveBtn.setOnClickListener(saveBtnListner);
-//        b
+        inGameSetSaveBtn.setOnClickListener(inGameSetSaveBtnListner);
 
 
         //Установка обработчика события для checkBox включения/выключения данной настройки в игру
@@ -360,6 +362,25 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Нажата кнопка Сохранить");
         }
     };
+
+    //Обработка события нажатия на кнопку "V"
+    private View.OnClickListener inGameSetSaveBtnListner = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setMessage(ChanelEnum.GameSet, GetGameSetValue());
+        }
+    };
+
+    private int GetGameSetValue(){
+        return (int)rateSwitcher.getValue() * 10000000 +
+                (int)rateSlider_1.getValue() * 1000000 +
+                (int)rateSlider_2.getValue() * 100000 +
+                (int)rateSlider_3.getValue() * 10000 +
+                (int)rateSlider_4.getValue() * 1000 +
+                (int)rateSlider_5.getValue() * 100 +
+                (int)rateSlider_6.getValue() * 10 +
+                (int)rateSlider_7.getValue();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -831,7 +852,8 @@ public class MainActivity extends AppCompatActivity {
         SpeedEnd("y"),
         IsUsed("u"),
         IsMin("i"),
-        IsSetState("w");
+        IsSetState("w"),
+        GameSet("G");
 
         private final String name;
 
