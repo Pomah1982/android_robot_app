@@ -330,10 +330,10 @@ public class MainActivity extends AppCompatActivity {
     private RangeSlider.OnChangeListener positionLimitsSliderListner = new RangeSlider.OnChangeListener() {
         @Override
         public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
-            int from = (int) slider.getValues().toArray()[0];
-            int to = (int) slider.getValues().toArray()[1];
-            setMessage(ChanelEnum.PositionStart, from);
-            setMessage(ChanelEnum.PositionEnd, to);
+            float from = (float) slider.getValues().toArray()[0];
+            float to = (float) slider.getValues().toArray()[1];
+            setMessage(ChanelEnum.PositionStart, (int) from);
+            setMessage(ChanelEnum.PositionEnd, (int) to);
             if(position.getValue() < from || position.getValue() > to) position.setValueTo((from + to)/2);
             position.setValueFrom(from);
             position.setValueTo(to);
