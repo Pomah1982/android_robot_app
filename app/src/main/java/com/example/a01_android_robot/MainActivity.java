@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         angleManual.setOnCheckedChangeListener(angleManualCheckBoxChangeListener);
         positionManual.setOnCheckedChangeListener(positionManualCheckBoxChangeListener);
         isSetState.setOnCheckedChangeListener(isSetStateCheckBoxListner);
+        //Данные 2 операции необходимы для правильной прорисовки ползунков после смены режима
         isSetState.setChecked(true);
         isSetState.setChecked(false);
 
@@ -329,9 +330,14 @@ public class MainActivity extends AppCompatActivity {
     private RangeSlider.OnChangeListener positionLimitsSliderListner = new RangeSlider.OnChangeListener() {
         @Override
         public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
-            setMessage(ChanelEnum.PositionStart, (int) slider.getValues().toArray()[0]);
-            setMessage(ChanelEnum.PositionEnd, (int) slider.getValues().toArray()[1]);
-            Log.d(TAG, "is_min = " + value);
+            int from = (int) slider.getValues().toArray()[0];
+            int to = (int) slider.getValues().toArray()[1];
+            setMessage(ChanelEnum.PositionStart, from);
+            setMessage(ChanelEnum.PositionEnd, to);
+            if(position.getValue() < from || position.getValue() > to) position.setValueTo((from + to)/2);
+            position.setValueFrom(from);
+            position.setValueTo(to);
+            Log.d(TAG, "positionLimitSlider = " + from + "-" + to);
         }
     };
 
@@ -732,10 +738,13 @@ public class MainActivity extends AppCompatActivity {
                     angle.setStepSize(10);
                     break;
                 case "p":
-                    position.setValueFrom(Math.round(min/10)*10);
-                    position.setValueTo(Math.round(max/10)*10);
-                    position.setValue(Math.round(min/10)*10);
+                    int from = Math.round(min/10)*10;
+                    int to = Math.round(max/10)*10;
+                    position.setValueFrom(from);
+                    position.setValueTo(to);
+                    position.setValue(from);
                     position.setStepSize(10);
+                    positionLimits.setValues((float)from, (float)to);
                     break;
                 case "t":
                     timePeriod.setValueFrom(Math.round(min/100)*100);
