@@ -140,174 +140,29 @@ public class MainActivity extends AppCompatActivity {
 
         mDeviceListAdapter = new DeviceListAdapter(this, R.layout.device_item, mDevices);
 
-        //Событие смены закручивания
-        spinSlider.addOnChangeListener(
-                new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                Log.d(TAG, "spin = " + value);
-                setMessage(ChanelEnum.Spin, (int)value);
-
-//////////////////////////////////Реализовать обработку события перемещения движков слайдера
-            }
-        });
-
-        //Событие смены допустимых пределов силы атаки
-        speedSlider.addOnChangeListener(
-                new Slider.OnChangeListener() {
-                    @Override
-                    public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                        int val = (int)value;
-                        if (is_min.isChecked()){   // если это установка минимального значения
-                            Log.d(TAG, "minSpeed = " + value);
-                            if(val >= speedMax) {
-                                if(speedMin < speedMax){
-                                    speedMin = speedMax;
-                                    setMessage(ChanelEnum.SpeedStart, speedMin);
-                                }
-                                speedSlider.setValue(speedMax);
-                                return;
-                            }
-                            speedMin = val;
-                            setMessage(ChanelEnum.SpeedStart, val);
-                        }
-                        else {  //Если это максимальное значение
-                            Log.d(TAG, "maxSpeed = " + value);
-
-                            if(val <= speedMin) {
-                                if(speedMax > speedMin){
-                                    speedMax = speedMin;
-                                    setMessage(ChanelEnum.SpeedEnd, speedMax);
-                                }
-                                speedSlider.setValue(speedMin);
-                                return;
-                            }
-                            speedMax = val;
-                            setMessage(ChanelEnum.SpeedEnd, val);
-                        }
-                    }
-                });
-
-
-        //Событие смены угла атаки
-        angle.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                Log.d(TAG, "angle = " + value);
-                setMessage(ChanelEnum.Angle, (int)value);
-            }
-        });
-
-        //Смена позиции
-        position.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                Log.d(TAG, "position = " + value);
-                setMessage(ChanelEnum.Position, (int)value);
-            }
-        });
-
-        //Смена интервала времени между выстрелами
-        timePeriod.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                Log.d(TAG, "time = " + value);
-                setMessage(ChanelEnum.TimePeriod, (int)value);
-            }
-        });
-
-        //Перемещение ползунка переключения наборов количества выстрелов по направлениям
-        rateSwitcher.addOnChangeListener(new Slider.OnChangeListener(){
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                setMessage(ChanelEnum.RateSwitcher, (int)value);
-            }
-        });
-
-        //Обработка события передвижения ползунков на слайдере границ направления выстрела
-        positionLimits.addOnChangeListener(new RangeSlider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
-                setMessage(ChanelEnum.PositionStart, (int)slider.getValues().toArray()[0]);
-                setMessage(ChanelEnum.PositionEnd, (int)slider.getValues().toArray()[1]);
-                Log.d(TAG, "is_min = " + value);
-            }
-        });
-
-        //Обработка установка обработчика события нажатия на кнопку Пуск/Стоп
+        // Установка обработчиков события
+        spinSlider.addOnChangeListener(spinSliderListner);
+        speedSlider.addOnChangeListener(speedSliderListner);
+        angle.addOnChangeListener(angleSliderListner);
+        position.addOnChangeListener(positionSliderChangeListner);
+        timePeriod.addOnChangeListener(timePeriodSliderChangeListner);
+        rateSwitcher.addOnChangeListener(rateSwitcherSliderChangeListner);
+        positionLimits.addOnChangeListener(positionLimitsSliderListner);
         pushBtn.setOnClickListener(pushBtnListner);
         saveBtn.setOnClickListener(saveBtnListner);
         inGameSetSaveBtn.setOnClickListener(inGameSetSaveBtnListner);
-
-        //Установка обработчика события для checkBox выбора устанавливаемого значения скорости min\max
-        is_min.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    speedLimitsLabel.setText("min\nSpeed");
-                }
-                else{
-                    speedLimitsLabel.setText("max\nSpeed");
-                }
-                setMessage(ChanelEnum.IsMin, isChecked ? 1 : 0);
-                Log.d(TAG, "is_min = " + isChecked);
-            }
-        });
-
-        //Установка обработчика события для checkBox включения/выключения режима настроек
-        isSetState.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    isSetState.setText("Режим настроек");
-                    settingsBlock.setVisibility(View.VISIBLE);
-                    workBlock.setVisibility(View.GONE);
-                    angle.invalidate();
-                    position.invalidate();
-                    timePeriod.invalidate();
-                }
-                else{
-                    isSetState.setText("Рабочий режим");
-                    settingsBlock.setVisibility(View.GONE);
-                    workBlock.setVisibility(View.VISIBLE);
-                    angle.invalidate();
-                    position.invalidate();
-                    timePeriod.invalidate();
-                }
-
-                setMessage(ChanelEnum.IsSetState, isChecked ? 1 : 0);
-                Log.d(TAG, "isSetState = " + isChecked);
-            }
-        });
-
-        //Обработка события выбора в checkBox ручной настройки угла закручивания
-        angleManual.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setMessage(ChanelEnum.AngleManual, isChecked ? 1 : 0);
-            }
-        });
-
-        //Обработка события выбора в checkBox ручной настройки угла закручивания
-        positionManual.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setMessage(ChanelEnum.PositionManual, isChecked ? 1 : 0);
-            }
-        });
-
-        //Эти две операции необходимы для перерисовки экрана, т.к. сбиваются указатели на слайдерах, расположенных внизу
+        is_min.setOnCheckedChangeListener(isMinCheckBoxChangeListner);
+        angleManual.setOnCheckedChangeListener(angleManualCheckBoxChangeListener);
+        positionManual.setOnCheckedChangeListener(positionManualCheckBoxChangeListener);
+        isSetState.setOnCheckedChangeListener(isSetStateCheckBoxListner);
         isSetState.setChecked(true);
         isSetState.setChecked(false);
-
-//        //Устанавливаем первоначальные значения для всех движков
-//        initialInfrastructure();
 
         enableBluetooth();
     }
 
 
-    //Обработчик события нажатия на кнопку "Пуск"
+    /** Обработчик события нажатия на кнопку "Пуск" */
     private View.OnClickListener pushBtnListner = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -318,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    //Обработчик события нажатия на кнопку "Сохранить"
+    /** Обработчик события нажатия на кнопку "Сохранить" */
     private View.OnClickListener saveBtnListner = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -327,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    //Обработка события нажатия на кнопку "V"
+    /** Обработка события нажатия на кнопку "V" */
     private View.OnClickListener inGameSetSaveBtnListner = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -335,6 +190,152 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    /** Обработка события выбора в checkBox включения/выключения режима настроек */
+    private CompoundButton.OnCheckedChangeListener isSetStateCheckBoxListner =
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if (isChecked) {
+                        isSetState.setText("Режим настроек");
+                        settingsBlock.setVisibility(View.VISIBLE);
+                        workBlock.setVisibility(View.GONE);
+                        angle.invalidate();
+                        position.invalidate();
+                        timePeriod.invalidate();
+                    } else {
+                        isSetState.setText("Рабочий режим");
+                        settingsBlock.setVisibility(View.GONE);
+                        workBlock.setVisibility(View.VISIBLE);
+                        angle.invalidate();
+                        position.invalidate();
+                        timePeriod.invalidate();
+                    }
+
+                    setMessage(ChanelEnum.IsSetState, isChecked ? 1 : 0);
+                    Log.d(TAG, "isSetState = " + isChecked);
+                }
+            };
+
+    /** Обработчик события выбора в checkBox устанавливаемого значения скорости min\max */
+    private CompoundButton.OnCheckedChangeListener isMinCheckBoxChangeListner = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+            if (isChecked) {
+                speedLimitsLabel.setText("min\nSpeed");
+            } else {
+                speedLimitsLabel.setText("max\nSpeed");
+            }
+            setMessage(ChanelEnum.IsMin, isChecked ? 1 : 0);
+            Log.d(TAG, "is_min = " + isChecked);
+        }
+    };
+
+    /** Обработчик события выбора в checkBox ручной настройки угла закручивания */
+    private CompoundButton.OnCheckedChangeListener angleManualCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            setMessage(ChanelEnum.AngleManual, isChecked ? 1 : 0);
+        }
+    };
+
+    /** Обработчик события выбора в checkBox ручной настройки направления выстрела */
+    private CompoundButton.OnCheckedChangeListener positionManualCheckBoxChangeListener =
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    setMessage(ChanelEnum.PositionManual, isChecked ? 1 : 0);
+                }
+            };
+
+    /** Обработчик события передвижения ползунка Spin слайдера */
+    private Slider.OnChangeListener spinSliderListner = new Slider.OnChangeListener() {
+        @Override
+        public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+            Log.d(TAG, "spin = " + value);
+            setMessage(ChanelEnum.Spin, (int) value);
+        }
+    };
+
+    /** Обработчик события передвижения ползунка слайдера Speed */
+    private Slider.OnChangeListener speedSliderListner = new Slider.OnChangeListener() {
+        @Override
+        public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+            int val = (int) value;
+            if (is_min.isChecked()) {   // если это установка минимального значения
+                Log.d(TAG, "minSpeed = " + value);
+                if (val >= speedMax) {
+                    if (speedMin < speedMax) {
+                        speedMin = speedMax;
+                        setMessage(ChanelEnum.SpeedStart, speedMin);
+                    }
+                    speedSlider.setValue(speedMax);
+                    return;
+                }
+                speedMin = val;
+                setMessage(ChanelEnum.SpeedStart, val);
+            } else {  //Если это максимальное значение
+                Log.d(TAG, "maxSpeed = " + value);
+
+                if (val <= speedMin) {
+                    if (speedMax > speedMin) {
+                        speedMax = speedMin;
+                        setMessage(ChanelEnum.SpeedEnd, speedMax);
+                    }
+                    speedSlider.setValue(speedMin);
+                    return;
+                }
+                speedMax = val;
+                setMessage(ChanelEnum.SpeedEnd, val);
+            }
+        }
+    };
+
+    /** Обработчик события передвижения ползунка слайдера угла закручивания */
+    private Slider.OnChangeListener angleSliderListner = new Slider.OnChangeListener() {
+        @Override
+        public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+            Log.d(TAG, "angle = " + value);
+            setMessage(ChanelEnum.Angle, (int) value);
+        }
+    };
+
+    /** Обработчик события передвижения слайдера направления выстрела */
+    private Slider.OnChangeListener positionSliderChangeListner = new Slider.OnChangeListener() {
+        @Override
+        public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+            Log.d(TAG, "position = " + value);
+            setMessage(ChanelEnum.Position, (int) value);
+        }
+    };
+
+    /** Обработчик события перемещения ползунка слайдера интервала времени */
+    private Slider.OnChangeListener timePeriodSliderChangeListner = new Slider.OnChangeListener() {
+        @Override
+        public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+            Log.d(TAG, "time = " + value);
+            setMessage(ChanelEnum.TimePeriod, (int) value);
+        }
+    };
+
+    /** Обработчик события перемещения ползунка переключения наборов количества выстрелов по направлениям */
+    private Slider.OnChangeListener rateSwitcherSliderChangeListner = new Slider.OnChangeListener() {
+        @Override
+        public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+            setMessage(ChanelEnum.RateSwitcher, (int) value);
+        }
+    };
+
+    /** Обработчик события передвижения ползунков на слайдере границ направления выстрела */
+    private RangeSlider.OnChangeListener positionLimitsSliderListner = new RangeSlider.OnChangeListener() {
+        @Override
+        public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+            setMessage(ChanelEnum.PositionStart, (int) slider.getValues().toArray()[0]);
+            setMessage(ChanelEnum.PositionEnd, (int) slider.getValues().toArray()[1]);
+            Log.d(TAG, "is_min = " + value);
+        }
+    };
+
+    /** Сформировать отправляемое на устройство значение параметров частоты выстрелов по направлениям */
     private int GetGameSetValue(){
         int retValue = (int)rateSwitcher.getValue() * 10000000 +
                 (int)rateSlider_1.getValue() * 1000000 +
