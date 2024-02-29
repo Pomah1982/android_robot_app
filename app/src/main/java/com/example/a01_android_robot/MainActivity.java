@@ -80,15 +80,11 @@ public class MainActivity extends AppCompatActivity {
     private ConnectedThread connectedThread;
     private ProgressDialog progressDialog;
 
-    private HashMap<String, String> infrastructureParams = new HashMap<String, String>() {
-        {put(ChanelEnum.Motor_1.name(), "801");put(ChanelEnum.Motor_2.name(), "801");put(ChanelEnum.Angle.name(), "1470");put(ChanelEnum.Position.name(), "1470");}
-    };
+    private HashMap<String, String> infrastructureParams = new HashMap<String, String>() {};
     //Запрошены лимиты - это первый запрос к STM
     private boolean limitsRequested;
     private boolean startMode = false;
 
-    private int minMotorSpeed = 850;
-    private int maxMotorSeed = 1200;
     private int minPosition = 400;//75;
     private int maxPosition = 2400;//105;
     private int minAngle = 400;//45;
@@ -215,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
         timePeriod.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                Log.d(TAG, "position = " + value);
+                Log.d(TAG, "time = " + value);
                 setMessage(ChanelEnum.TimePeriod, (int)value);
             }
         });
@@ -232,8 +228,9 @@ public class MainActivity extends AppCompatActivity {
         positionLimits.addOnChangeListener(new RangeSlider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
-                setMessage(ChanelEnum.PositionStart, (int)slider.getValueFrom());
-                setMessage(ChanelEnum.PositionEnd, (int)slider.getValueTo());
+                setMessage(ChanelEnum.PositionStart, (int)slider.getValues().toArray()[0]);
+                setMessage(ChanelEnum.PositionEnd, (int)slider.getValues().toArray()[1]);
+                Log.d(TAG, "is_min = " + value);
             }
         });
 
@@ -339,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private int GetGameSetValue(){
-        return (int)rateSwitcher.getValue() * 10000000 +
+        int retValue = (int)rateSwitcher.getValue() * 10000000 +
                 (int)rateSlider_1.getValue() * 1000000 +
                 (int)rateSlider_2.getValue() * 100000 +
                 (int)rateSlider_3.getValue() * 10000 +
@@ -347,6 +344,7 @@ public class MainActivity extends AppCompatActivity {
                 (int)rateSlider_5.getValue() * 100 +
                 (int)rateSlider_6.getValue() * 10 +
                 (int)rateSlider_7.getValue();
+        return retValue;
     }
 
     @Override
@@ -800,6 +798,16 @@ public class MainActivity extends AppCompatActivity {
         position.setValue(Math.round((tmp == 0 ? (minPosition + maxPosition)/ 2 : tmp)/10)*10);
         tmp = Short.parseShort(infrastructureParams.get("t"));
         timePeriod.setValue(tmp == 0 ? minTime + 1 : tmp);
+        String gameSet = infrastructureParams.get("G");
+        Log.d(TAG, gameSet);
+        rateSwitcher.setValue((int)gameSet.charAt(0) - 48);
+        rateSlider_1.setValue((int)gameSet.charAt(1) - 48);
+        rateSlider_2.setValue((int)gameSet.charAt(2) - 48);
+        rateSlider_3.setValue((int)gameSet.charAt(3) - 48);
+        rateSlider_4.setValue((int)gameSet.charAt(4) - 48);
+        rateSlider_5.setValue((int)gameSet.charAt(5) - 48);
+        rateSlider_6.setValue((int)gameSet.charAt(6) - 48);
+        rateSlider_7.setValue((int)gameSet.charAt(7) - 48);
     }
 
     //Enum команд
