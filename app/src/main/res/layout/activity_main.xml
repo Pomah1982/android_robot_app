@@ -145,87 +145,8 @@
 
             </com.google.android.material.tabs.TabLayout>
 
-            <!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="-15dp"-->
-<!--                android:orientation="horizontal">-->
-
-<!--                <CheckBox-->
-<!--                    android:id="@+id/inGame_all"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:buttonTint="@color/design_default_color_error"-->
-<!--                    android:checked="false" />-->
-
-<!--                <CheckBox-->
-<!--                    android:id="@+id/inGame_m4"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:checked="false" />-->
-
-<!--                <CheckBox-->
-<!--                    android:id="@+id/inGame_m3"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:checked="false" />-->
-
-<!--                <CheckBox-->
-<!--                    android:id="@+id/inGame_m2"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:checked="false" />-->
-
-<!--                <CheckBox-->
-<!--                    android:id="@+id/inGame_m1"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:checked="false" />-->
-
-<!--                <CheckBox-->
-<!--                    android:id="@+id/inGame_0"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:buttonTint="@color/material_on_background_emphasis_medium"-->
-<!--                    android:checked="true" />-->
-
-<!--                <CheckBox-->
-<!--                    android:id="@+id/inGame_p1"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:checked="false" />-->
-
-<!--                <CheckBox-->
-<!--                    android:id="@+id/inGame_p2"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:checked="false" />-->
-
-<!--                <CheckBox-->
-<!--                    android:id="@+id/inGame_p3"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:checked="false" />-->
-
-<!--                <CheckBox-->
-<!--                    android:id="@+id/inGame_p4"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:checked="false" />-->
-<!--            </LinearLayout>-->
-
             <LinearLayout
-                android:id="@+id/directions"
+                android:id="@+id/directionsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -331,133 +252,136 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/inGameParams"
+            <ScrollView
+                android:id="@+id/inGameParamsScrollView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/inGameSlider_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginBottom="-10dp"
-                    android:stepSize="1"
-                    android:valueFrom="0"
-                    android:valueTo="9"
-                    app:labelBehavior="gone" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/inGameSlider_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginBottom="-10dp"
-                    android:stepSize="1"
-                    android:valueFrom="0"
-                    android:valueTo="9"
-                    app:labelBehavior="gone" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/inGameSlider_3"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginBottom="-10dp"
-                    android:stepSize="1"
-                    android:valueFrom="0"
-                    android:valueTo="9"
-                    app:labelBehavior="gone" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/inGameSlider_4"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginBottom="-10dp"
-                    android:stepSize="1"
-                    android:valueFrom="0"
-                    android:valueTo="9"
-                    app:labelBehavior="gone" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/inGameSlider_5"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginBottom="-10dp"
-                    android:stepSize="1"
-                    android:valueFrom="0"
-                    android:valueTo="9"
-                    app:labelBehavior="gone" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/inGameSlider_6"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginBottom="-10dp"
-                    android:stepSize="1"
-                    android:valueFrom="0"
-                    android:valueTo="9"
-                    app:labelBehavior="gone" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/inGameSlider_7"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginBottom="-10dp"
-                    android:stepSize="1"
-                    android:valueFrom="0"
-                    android:valueTo="9"
-                    app:labelBehavior="gone" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/inGameSlider_8"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginBottom="-10dp"
-                    android:stepSize="1"
-                    android:valueFrom="0"
-                    android:valueTo="9"
-                    app:labelBehavior="gone" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/inGameSlider_9"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginBottom="-10dp"
-                    android:stepSize="1"
-                    android:valueFrom="0"
-                    android:valueTo="9"
-                    app:labelBehavior="gone" />
-
+                android:layout_height="match_parent">
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/inGameSlider_m4"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="-10dp"
+                        android:stepSize="1"
+                        android:valueFrom="0"
+                        android:valueTo="9"
+                        app:labelBehavior="gone" />
 
                     <com.google.android.material.slider.Slider
-                        android:id="@+id/inGameSwitcher"
-                        android:layout_width="0dp"
-                        android:layout_height="30dp"
-                        android:layout_marginTop="-15dp"
-                        android:layout_weight="9"
+                        android:id="@+id/inGameSlider_m3"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="-10dp"
                         android:stepSize="1"
-                        android:valueFrom="1"
-                        android:valueTo="10"
-                        app:labelBehavior="withinBounds"
-                        app:trackColor="@color/design_default_color_on_primary" />
+                        android:valueFrom="0"
+                        android:valueTo="9"
+                        app:labelBehavior="gone" />
 
-                    <Button
-                        android:id="@+id/inGameSetSaveBtn_2"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:text="V"
-                        android:textAlignment="center"
-                        android:textSize="20dp"
-                        android:textStyle="bold"
-                        app:cornerRadius="15dp"/>
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/inGameSlider_m2"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="-10dp"
+                        android:stepSize="1"
+                        android:valueFrom="0"
+                        android:valueTo="9"
+                        app:labelBehavior="gone" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/inGameSlider_m1"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="-10dp"
+                        android:stepSize="1"
+                        android:valueFrom="0"
+                        android:valueTo="9"
+                        app:labelBehavior="gone" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/inGameSlider_0"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="-10dp"
+                        android:stepSize="1"
+                        android:valueFrom="0"
+                        android:valueTo="9"
+                        app:labelBehavior="gone" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/inGameSlider_p1"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="-10dp"
+                        android:stepSize="1"
+                        android:valueFrom="0"
+                        android:valueTo="9"
+                        app:labelBehavior="gone" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/inGameSlider_p2"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="-10dp"
+                        android:stepSize="1"
+                        android:valueFrom="0"
+                        android:valueTo="9"
+                        app:labelBehavior="gone" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/inGameSlider_p3"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="-10dp"
+                        android:stepSize="1"
+                        android:valueFrom="0"
+                        android:valueTo="9"
+                        app:labelBehavior="gone" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/inGameSlider_p4"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginBottom="-10dp"
+                        android:stepSize="1"
+                        android:valueFrom="0"
+                        android:valueTo="9"
+                        app:labelBehavior="gone" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.slider.Slider
+                            android:id="@+id/inGameSwitcher"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="-15dp"
+                            android:layout_weight="9"
+                            android:stepSize="1"
+                            android:valueFrom="1"
+                            android:valueTo="10"
+                            app:labelBehavior="withinBounds"
+                            app:trackColor="@color/design_default_color_on_primary" />
+
+                        <Button
+                            android:id="@+id/inGameSetSaveBtn"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:text="V"
+                            android:textAlignment="center"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            app:cornerRadius="15dp"/>
+
+                    </LinearLayout>
 
                 </LinearLayout>
-
-            </LinearLayout>
-
+            </ScrollView>
 
         </LinearLayout>
 

@@ -28,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,14 +49,15 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = getClass().getSimpleName();
     private static final int REQ_ENABLE_BLUETOOTH = 1001;
 
-    private LinearLayout settingsBlock;
-    private LinearLayout workBlock;
+    private LinearLayout settingsBlock, workBlock, directionsLayout;
+    private ScrollView inGameParamsScrollView;
 
     private TabLayout tabLayout;
     private Slider angle, position, timePeriod, spinSlider, speedSlider,
             rateSlider_1, rateSlider_2, rateSlider_3, rateSlider_4,
-            rateSlider_5, rateSlider_6, rateSlider_7,
-            rateSwitcher;
+            rateSlider_5, rateSlider_6, rateSlider_7, rateSwitcher,
+            inGameSlider_m4,inGameSlider_m3, inGameSlider_m2,inGameSlider_m1,inGameSlider_0,
+            inGameSlider_p1,inGameSlider_p2,inGameSlider_p3,inGameSlider_p4, inGameSwitcher;
     private RangeSlider positionLimits;
 
     //Включена настройка минимума скорости
@@ -66,13 +68,12 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox angleManual;
     //Значение направления выстрела устанавливается вручную
     private CheckBox positionManual;
-    /** Чекбоксы выбора будет ли включен в игру набор настроек для определенной степени закручивания мяча (m4 - настройка "-4", p4 - настройка "+4"*/
-    private Slider inGame_m4,inGame_m3,inGame_m2,inGame_m1,inGame_0,inGame_p1,inGame_p2,inGame_p3,inGame_p4,inGame_all;
     private TextView speedLimitsLabel;
 
     private Button pushBtn;
     private Button saveBtn;
     private Button directionSetSaveBtn;
+    private Button inGameSetSaveBtn;
 
     private BluetoothAdapter bluetoothAdapter;
     private ProgressDialog mProgressDialog;
@@ -111,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
         //Инициализируем все элементы на экране'
         settingsBlock = findViewById(R.id.settingsBlock);
         workBlock = findViewById(R.id.workBlock);
+        directionsLayout = findViewById(R.id.directionsLayout);
+        inGameParamsScrollView = findViewById(R.id.inGameParamsScrollView);
         is_min = findViewById(R.id.is_min);
         isSetState = findViewById(R.id.isSetState);
         angleManual = findViewById(R.id.angleManual);
@@ -124,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         pushBtn = findViewById(R.id.pushBtn);
         saveBtn = findViewById(R.id.saveBtn);
         directionSetSaveBtn = findViewById(R.id.directionSetSaveBtn);
+        inGameSetSaveBtn = findViewById(R.id.inGameSetSaveBtn);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Соединение...");
@@ -137,15 +141,16 @@ public class MainActivity extends AppCompatActivity {
         rateSlider_7 = findViewById(R.id.rateSlider_7);
         rateSwitcher = findViewById(R.id.rateSwitcher);
         positionLimits = findViewById(R.id.positionLimits);
-//        inGame_m4 = findViewById(R.id.inGame_m4);
-//        inGame_m3 = findViewById(R.id.inGame_m3);
-//        inGame_m2 = findViewById(R.id.inGame_m2);
-//        inGame_m1 = findViewById(R.id.inGame_m1);
-//        inGame_0 = findViewById(R.id.inGame_0);
-//        inGame_p1 = findViewById(R.id.inGame_p1);
-//        inGame_p2 = findViewById(R.id.inGame_p2);
-//        inGame_p3 = findViewById(R.id.inGame_p3);
-//        inGame_p4 = findViewById(R.id.inGame_p4);
+        inGameSlider_m4 = findViewById(R.id.inGameSlider_m4);
+        inGameSlider_m3 = findViewById(R.id.inGameSlider_m3);
+        inGameSlider_m2 = findViewById(R.id.inGameSlider_m2);
+        inGameSlider_m1 = findViewById(R.id.inGameSlider_m1);
+        inGameSlider_0 = findViewById(R.id.inGameSlider_0);
+        inGameSlider_p1 = findViewById(R.id.inGameSlider_p1);
+        inGameSlider_p2 = findViewById(R.id.inGameSlider_p2);
+        inGameSlider_p3 = findViewById(R.id.inGameSlider_p3);
+        inGameSlider_p4 = findViewById(R.id.inGameSlider_p4);
+        inGameSwitcher = findViewById(R.id.inGameSwitcher);
         tabLayout = findViewById(R.id.tab_layout);
 
 
@@ -168,22 +173,14 @@ public class MainActivity extends AppCompatActivity {
         positionLimits.addOnChangeListener(positionLimitsSliderListner);
         pushBtn.setOnClickListener(pushBtnListner);
         saveBtn.setOnClickListener(saveBtnListner);
-        directionSetSaveBtn.setOnClickListener(inGameSetSaveBtnListner);
+        directionSetSaveBtn.setOnClickListener(directionSetSaveBtnListner);
+        inGameSetSaveBtn.setOnClickListener(inGameSetSaveBtnListner);
         is_min.setOnCheckedChangeListener(isMinCheckBoxChangeListner);
         angleManual.setOnCheckedChangeListener(angleManualCheckBoxChangeListener);
         positionManual.setOnCheckedChangeListener(positionManualCheckBoxChangeListener);
         isSetState.setOnCheckedChangeListener(isSetStateCheckBoxListner);
-//        inGame_all.setOnCheckedChangeListener(inGameAllCheckBoxChangeListener);
-//        inGame_0.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-//        inGame_m1.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-//        inGame_m2.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-//        inGame_m3.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-//        inGame_m4.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-//        inGame_p1.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-//        inGame_p2.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-//        inGame_p3.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-//        inGame_p4.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
         tabLayout.addOnTabSelectedListener(tabSelectedListner);
+
         //Данные 2 операции необходимы для правильной прорисовки ползунков после смены режима
         isSetState.setChecked(true);
         isSetState.setChecked(false);
@@ -212,11 +209,19 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    /** Обработка события нажатия на кнопку "V" */
+    /** Обработка события нажатия на кнопку "V" во вкладке "Направления" */
+    private View.OnClickListener directionSetSaveBtnListner = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setMessage(ChanelEnum.DirectionSet, GetDirectionSetValue());
+        }
+    };
+
+    /** Обработка события нажатия на кнопку "V" во вкладке "Набор В игре" */
     private View.OnClickListener inGameSetSaveBtnListner = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            setMessage(ChanelEnum.GameSet, GetGameSetValue());
+            setMessage(ChanelEnum.InGameSet, GetInGameValues());
         }
     };
 
@@ -260,20 +265,17 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-//    /** Обработчик события выбора в одном из checkBox включения набора настроек скорости для определенного режима закручивания мяча */
-//    private CompoundButton.OnCheckedChangeListener inGameCheckBoxChangeListner = new CompoundButton.OnCheckedChangeListener() {
-//        @Override
-//        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-//            if (needSendMessage) setMessage(ChanelEnum.InGame, GetInGameValues());
-//        }
-//    };
-
+    /** Обработчик события выбора вкладки для настроек "Направления"/"Набор в игре" */
     private TabLayout.OnTabSelectedListener tabSelectedListner = new TabLayout.OnTabSelectedListener() {
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             switch (tab.getPosition()){
-                case 0: break;
-                default: break;
+                case 0: inGameParamsScrollView.setVisibility(View.GONE);
+                    directionsLayout.setVisibility(View.VISIBLE);
+                    break;
+                default: directionsLayout.setVisibility(View.GONE);
+                    inGameParamsScrollView.setVisibility(View.VISIBLE);
+                    break;
             }
 
         }
@@ -289,42 +291,25 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-//    /** Сформировать значение, отправляемое на устройство для набора CheckBox-ов включения в игру настроек закручивания */
-//    private int GetInGameValues(){
-//        return GetInGameCheckBoxValue(inGame_p4.isChecked(), 100000000) +
-//                GetInGameCheckBoxValue(inGame_p3.isChecked(), 10000000) +
-//                GetInGameCheckBoxValue(inGame_p2.isChecked(), 1000000) +
-//                GetInGameCheckBoxValue(inGame_p1.isChecked(), 100000) +
-//                GetInGameCheckBoxValue(inGame_0.isChecked(), 10000) +
-//                GetInGameCheckBoxValue(inGame_m1.isChecked(), 1000) +
-//                GetInGameCheckBoxValue(inGame_m2.isChecked(), 100) +
-//                GetInGameCheckBoxValue(inGame_m3.isChecked(), 10) +
-//                GetInGameCheckBoxValue(inGame_m4.isChecked(), 1);
-//    }
-//
-//    /** Сформировать значение, отправляемое на устройство для конкретного CheckBox включения в игру конкретной настройки закручивания */
-//    private int GetInGameCheckBoxValue(boolean isChecked, int multiplier){
-//        return isChecked ? multiplier : 0;
-//    }
+    /** Сформировать значение, отправляемое на устройство для набора участвующих в игре режимов закручивания */
+    private int GetInGameValues(){
+        return (int)(inGameSwitcher.getValue() * 1_000_000_000 +
+                inGameSlider_p4.getValue() * 100_000_000 +
+                inGameSlider_p3.getValue() * 10_000_000 +
+                inGameSlider_p2.getValue() * 1_000_000 +
+                inGameSlider_p1.getValue() * 100_000 +
+                inGameSlider_0.getValue() * 10_000 +
+                inGameSlider_m1.getValue() * 1_000 +
+                inGameSlider_m2.getValue() * 100 +
+                inGameSlider_m3.getValue() * 10 +
+                inGameSlider_m4.getValue());
+    }
 
-    /** Обработчик события выбора в checkBox ручной настройки угла закручивания */
-    private CompoundButton.OnCheckedChangeListener inGameAllCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            needSendMessage = false;
-//            inGame_0.setChecked(true);
-//            inGame_m1.setChecked(isChecked);
-//            inGame_m2.setChecked(isChecked);
-//            inGame_m3.setChecked(isChecked);
-//            inGame_m4.setChecked(isChecked);
-//            inGame_p1.setChecked(isChecked);
-//            inGame_p2.setChecked(isChecked);
-//            inGame_p3.setChecked(isChecked);
-//            inGame_p4.setChecked(isChecked);
-            needSendMessage = true;
-            setMessage(ChanelEnum.InGame, isChecked ? 111111111 : 10000);
-        }
-    };
+    /** Сформировать значение, отправляемое на устройство для конкретного CheckBox включения в игру конкретной настройки закручивания */
+    private int GetInGameCheckBoxValue(boolean isChecked, int multiplier){
+        return isChecked ? multiplier : 0;
+    }
+
 
     /** Обработчик события выбора в checkBox ручной настройки угла закручивания */
     private CompoundButton.OnCheckedChangeListener angleManualCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -438,7 +423,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     /** Сформировать отправляемое на устройство значение параметров частоты выстрелов по направлениям */
-    private int GetGameSetValue(){
+    private int GetDirectionSetValue(){
         int retValue = (int)rateSwitcher.getValue() * 10000000 +
                 (int)rateSlider_1.getValue() * 1000000 +
                 (int)rateSlider_2.getValue() * 100000 +
@@ -904,16 +889,28 @@ public class MainActivity extends AppCompatActivity {
         position.setValue(Math.round((tmp == 0 ? (minPosition + maxPosition)/ 2 : tmp)/10)*10);
         tmp = Short.parseShort(infrastructureParams.get("t"));
         timePeriod.setValue(tmp == 0 ? minTime + 1 : tmp);
-        String gameSet = infrastructureParams.get("G");
-        Log.d(TAG, gameSet);
-        rateSwitcher.setValue((int)gameSet.charAt(0) - 48);
-        rateSlider_1.setValue((int)gameSet.charAt(1) - 48);
-        rateSlider_2.setValue((int)gameSet.charAt(2) - 48);
-        rateSlider_3.setValue((int)gameSet.charAt(3) - 48);
-        rateSlider_4.setValue((int)gameSet.charAt(4) - 48);
-        rateSlider_5.setValue((int)gameSet.charAt(5) - 48);
-        rateSlider_6.setValue((int)gameSet.charAt(6) - 48);
-        rateSlider_7.setValue((int)gameSet.charAt(7) - 48);
+        String directionSet = infrastructureParams.get("D");
+        Log.d(TAG, directionSet);
+        rateSwitcher.setValue((int)directionSet.charAt(0) - 48);
+        rateSlider_1.setValue((int)directionSet.charAt(1) - 48);
+        rateSlider_2.setValue((int)directionSet.charAt(2) - 48);
+        rateSlider_3.setValue((int)directionSet.charAt(3) - 48);
+        rateSlider_4.setValue((int)directionSet.charAt(4) - 48);
+        rateSlider_5.setValue((int)directionSet.charAt(5) - 48);
+        rateSlider_6.setValue((int)directionSet.charAt(6) - 48);
+        rateSlider_7.setValue((int)directionSet.charAt(7) - 48);
+        String inGameSet = infrastructureParams.get("G");
+        Log.d(TAG, inGameSet);
+        inGameSwitcher.setValue((int)inGameSet.charAt(0) - 48);
+        inGameSlider_m4.setValue((int)inGameSet.charAt(1) - 48);
+        inGameSlider_m3.setValue((int)inGameSet.charAt(2) - 48);
+        inGameSlider_m2.setValue((int)inGameSet.charAt(3) - 48);
+        inGameSlider_m1.setValue((int)inGameSet.charAt(4) - 48);
+        inGameSlider_0.setValue((int)inGameSet.charAt(5) - 48);
+        inGameSlider_p1.setValue((int)inGameSet.charAt(6) - 48);
+        inGameSlider_p2.setValue((int)inGameSet.charAt(7) - 48);
+        inGameSlider_p3.setValue((int)inGameSet.charAt(8) - 48);
+        inGameSlider_p4.setValue((int)inGameSet.charAt(9) - 48);
     }
 
     //Enum команд
@@ -950,9 +947,9 @@ public class MainActivity extends AppCompatActivity {
         /** Переключение наборов частот выстрелов по направлениям */
         RateSwitcher("F"),
         /** Настройки частоты выстрелов по направлениям */
-        GameSet("G"),
+        DirectionSet("D"),
         /** Настройки включения режимов закручивания мяча в игру */
-        InGame("H");
+        InGameSet("G");
 
         private final String name;
 
