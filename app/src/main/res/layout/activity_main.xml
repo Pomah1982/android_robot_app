@@ -111,58 +111,6 @@
                     android:textSize="15dp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <CheckBox
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
-                <CheckBox
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
-                <CheckBox
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
-                <CheckBox
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
-                <CheckBox
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
-                <CheckBox
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
-                <CheckBox
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
-                <CheckBox
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
-                <CheckBox
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/inGameSlider"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="-50dp"
-                android:valueFrom="1"
-                android:valueTo="10"
-                android:stepSize="1"
-                app:labelBehavior="gone" />
-
             <Button
                 android:id="@+id/saveBtn"
                 android:layout_width="match_parent"
@@ -172,27 +120,72 @@
                 android:text="Сохранить настройки" />
         </LinearLayout>
 
-        <com.google.android.material.tabs.TabLayout
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_marginBottom="15dp">
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Частота" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Прессеты" />
-        </com.google.android.material.tabs.TabLayout>
-
         <LinearLayout
             android:id="@+id/workBlock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="-15dp">
+                <CheckBox
+                    android:id="@+id/inGame_m4"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:checked="false"/>
+                <CheckBox
+                    android:id="@+id/inGame_m3"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:checked="false"/>
+                <CheckBox
+                    android:id="@+id/inGame_m2"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:checked="false"/>
+                <CheckBox
+                    android:id="@+id/inGame_m1"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:checked="false"/>
+                <CheckBox
+                    android:id="@+id/inGame_0"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:checked="true"/>
+                <CheckBox
+                    android:id="@+id/inGame_p1"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:checked="false"/>
+                <CheckBox
+                    android:id="@+id/inGame_p2"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:checked="false"/>
+                <CheckBox
+                    android:id="@+id/inGame_p3"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:checked="false"/>
+                <CheckBox
+                    android:id="@+id/inGame_p4"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:checked="false"/>
+            </LinearLayout>
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/rateSlider_1"

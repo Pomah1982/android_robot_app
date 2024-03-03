@@ -63,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox angleManual;
     //Значение направления выстрела устанавливается вручную
     private CheckBox positionManual;
-    private TextView speedLimitsLabel, angle_val, position_val, time_val;
+    /** Чекбоксы выбора будет ли включен в игру набор настроек для определенной степени закручивания мяча (m4 - настройка "-4", p4 - настройка "+4"*/
+    private CheckBox inGame_m4,inGame_m3,inGame_m2,inGame_m1,inGame_0,inGame_p1,inGame_p2,inGame_p3,inGame_p4;
+    private TextView speedLimitsLabel;
 
     private Button pushBtn;
     private Button saveBtn;
@@ -129,6 +131,15 @@ public class MainActivity extends AppCompatActivity {
         rateSlider_7 = findViewById(R.id.rateSlider_7);
         rateSwitcher = findViewById(R.id.rateSwitcher);
         positionLimits = findViewById(R.id.positionLimits);
+        inGame_m4 = findViewById(R.id.inGame_m4);
+        inGame_m3 = findViewById(R.id.inGame_m3);
+        inGame_m2 = findViewById(R.id.inGame_m2);
+        inGame_m1 = findViewById(R.id.inGame_m1);
+        inGame_0 = findViewById(R.id.inGame_0);
+        inGame_p1 = findViewById(R.id.inGame_p1);
+        inGame_p2 = findViewById(R.id.inGame_p2);
+        inGame_p3 = findViewById(R.id.inGame_p3);
+        inGame_p4 = findViewById(R.id.inGame_p4);
 
 
         //Инициализируем все остальные элементы
@@ -155,6 +166,15 @@ public class MainActivity extends AppCompatActivity {
         angleManual.setOnCheckedChangeListener(angleManualCheckBoxChangeListener);
         positionManual.setOnCheckedChangeListener(positionManualCheckBoxChangeListener);
         isSetState.setOnCheckedChangeListener(isSetStateCheckBoxListner);
+        inGame_0.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+        inGame_m1.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+        inGame_m2.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+        inGame_m3.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+        inGame_m4.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+        inGame_p1.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+        inGame_p2.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+        inGame_p3.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+        inGame_p4.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
         //Данные 2 операции необходимы для правильной прорисовки ползунков после смены режима
         isSetState.setChecked(true);
         isSetState.setChecked(false);
@@ -230,6 +250,32 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "is_min = " + isChecked);
         }
     };
+
+    /** Обработчик события выбора в одном из checkBox включения набора настроек скорости для определенного режима закручивания мяча */
+    private CompoundButton.OnCheckedChangeListener inGameCheckBoxChangeListner = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+            setMessage(ChanelEnum.InGame, GetInGameValues());
+        }
+    };
+
+    /** Сформировать значение, отправляемое на устройство для набора CheckBox-ов включения в игру настроек закручивания */
+    private int GetInGameValues(){
+        return GetInGameCheckBoxValue(inGame_p4.isChecked(), 100000000) +
+                GetInGameCheckBoxValue(inGame_p3.isChecked(), 10000000) +
+                GetInGameCheckBoxValue(inGame_p2.isChecked(), 1000000) +
+                GetInGameCheckBoxValue(inGame_p1.isChecked(), 100000) +
+                GetInGameCheckBoxValue(inGame_0.isChecked(), 10000) +
+                GetInGameCheckBoxValue(inGame_m1.isChecked(), 1000) +
+                GetInGameCheckBoxValue(inGame_m2.isChecked(), 100) +
+                GetInGameCheckBoxValue(inGame_m3.isChecked(), 10) +
+                GetInGameCheckBoxValue(inGame_m4.isChecked(), 1);
+    }
+
+    /** Сформировать значение, отправляемое на устройство для конкретного CheckBox включения в игру конкретной настройки закручивания */
+    private int GetInGameCheckBoxValue(boolean isChecked, int multiplier){
+        return isChecked ? multiplier : 0;
+    }
 
     /** Обработчик события выбора в checkBox ручной настройки угла закручивания */
     private CompoundButton.OnCheckedChangeListener angleManualCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -823,44 +869,41 @@ public class MainActivity extends AppCompatActivity {
 
     //Enum команд
     public enum ChanelEnum{
-        //Запрос лимитов для инфраструктуры
+        /** Запрос лимитов для инфраструктуры */
         Limits("l"),
-        //Получить настройки инфрастуктуры
+        /** Получить настройки инфрастуктуры */
         Get("g"),
-        //Нажата кнопка "Пуск"
+        /** Нажата кнопка "Пуск" */
         Start("b"),
         Save("c"),
-        //Скорость для верхнего двигателя
-        Motor_1("m"),
-        //Скорость для нижнего двигателя
-        Motor_2("n"),
-        //Угол поворота пушки
         Angle("a"),
         Position("p"),
-        //Начальная (левая) позиция выстрела
+        /** Начальная (левая) позиция выстрела */
         PositionStart("P"),
-        //Конечная (правая) позиция выстрела
+        /** Конечная (правая) позиция выстрела */
         PositionEnd("Q"),
-        //Установка угла вручную
+        /** Установка угла вручную */
         AngleManual("A"),
-        //Установка направления выстрела вручную
+        /** Установка направления выстрела вручную */
         PositionManual("B"),
-        //Время между выстрелами
+        /** Время между выстрелами */
         TimePeriod("t"),
-        //Уровень вращения -4<=>4
+        /** Уровень вращения -4<=>4 */
         Spin("r"),
-        //Минимальная скорость вращения двигателя
+        /** Минимальная скорость вращения двигателя */
         SpeedStart("x"),
-        //Максимальная скорость вращения двигателя
+        /* Максимальная скорость вращения двигателя */
         SpeedEnd("y"),
-        //Настраивается минимум скорости
+        /** Настраивается минимум скорости */
         IsMin("i"),
-        //Приложение находится в режиме настроек
+        /** Приложение находится в режиме настроек */
         IsSetState("w"),
-        //Переключение наборов частот выстрелов по направлениям
+        /** Переключение наборов частот выстрелов по направлениям */
         RateSwitcher("F"),
-        //Настройки частоты выстрелов по направлениям
-        GameSet("G");
+        /** Настройки частоты выстрелов по направлениям */
+        GameSet("G"),
+        /** Настройки включения режимов закручивания мяча в игру */
+        InGame("H");
 
         private final String name;
 
