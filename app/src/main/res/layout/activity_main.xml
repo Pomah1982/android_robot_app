@@ -30,7 +30,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="-10dp"
                     android:layout_weight="5"
-                    android:contentDescription="spinSlider"
                     app:labelBehavior="visible" />
 
                 <TextView
@@ -112,6 +111,58 @@
                     android:textSize="15dp" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <CheckBox
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/inGameSlider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-50dp"
+                android:valueFrom="1"
+                android:valueTo="10"
+                android:stepSize="1"
+                app:labelBehavior="gone" />
+
             <Button
                 android:id="@+id/saveBtn"
                 android:layout_width="match_parent"
@@ -120,6 +171,22 @@
                 android:layout_marginBottom="-20dp"
                 android:text="Сохранить настройки" />
         </LinearLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginBottom="15dp">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Частота" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Прессеты" />
+        </com.google.android.material.tabs.TabLayout>
 
         <LinearLayout
             android:id="@+id/workBlock"
@@ -131,7 +198,7 @@
                 android:id="@+id/rateSlider_1"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginBottom="-10dp"
                 android:stepSize="1"
                 android:valueFrom="0"
                 android:valueTo="9"
@@ -141,7 +208,7 @@
                 android:id="@+id/rateSlider_2"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginBottom="-10dp"
                 android:stepSize="1"
                 android:valueFrom="0"
                 android:valueTo="9"
@@ -151,7 +218,7 @@
                 android:id="@+id/rateSlider_3"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginBottom="-10dp"
                 android:stepSize="1"
                 android:valueFrom="0"
                 android:valueTo="9"
@@ -161,7 +228,7 @@
                 android:id="@+id/rateSlider_4"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginBottom="-10dp"
                 android:stepSize="1"
                 android:valueFrom="0"
                 android:valueTo="9"
@@ -171,7 +238,7 @@
                 android:id="@+id/rateSlider_5"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginBottom="-10dp"
                 android:stepSize="1"
                 android:valueFrom="0"
                 android:valueTo="9"
@@ -181,7 +248,7 @@
                 android:id="@+id/rateSlider_6"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginBottom="-10dp"
                 android:stepSize="1"
                 android:valueFrom="0"
                 android:valueTo="9"
@@ -191,7 +258,7 @@
                 android:id="@+id/rateSlider_7"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginBottom="-10dp"
                 android:stepSize="1"
                 android:valueFrom="0"
                 android:valueTo="9"
