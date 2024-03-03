@@ -132,6 +132,13 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="-15dp">
                 <CheckBox
+                    android:id="@+id/inGame_all"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:buttonTint="@color/design_default_color_error"/>
+                <CheckBox
                     android:id="@+id/inGame_m4"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -160,7 +167,8 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:checked="true"/>
+                    android:checked="true"
+                    android:buttonTint="@color/material_on_background_emphasis_medium"/>
                 <CheckBox
                     android:id="@+id/inGame_p1"
                     android:layout_width="0dp"

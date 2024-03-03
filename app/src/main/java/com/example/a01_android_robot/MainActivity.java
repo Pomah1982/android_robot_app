@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     //Значение направления выстрела устанавливается вручную
     private CheckBox positionManual;
     /** Чекбоксы выбора будет ли включен в игру набор настроек для определенной степени закручивания мяча (m4 - настройка "-4", p4 - настройка "+4"*/
-    private CheckBox inGame_m4,inGame_m3,inGame_m2,inGame_m1,inGame_0,inGame_p1,inGame_p2,inGame_p3,inGame_p4;
+    private CheckBox inGame_m4,inGame_m3,inGame_m2,inGame_m1,inGame_0,inGame_p1,inGame_p2,inGame_p3,inGame_p4,inGame_all;
     private TextView speedLimitsLabel;
 
     private Button pushBtn;
@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
     //Запрошены лимиты - это первый запрос к STM
     private boolean limitsRequested;
     private boolean startMode = false;
+    /** Необходимо отправить сообщение с value события. Необходимо для некоторых CheckBox (inGame) */
+    private boolean needSendMessage = true;
 
     private int minPosition = 400;//75;
     private int maxPosition = 2400;//105;
@@ -131,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         rateSlider_7 = findViewById(R.id.rateSlider_7);
         rateSwitcher = findViewById(R.id.rateSwitcher);
         positionLimits = findViewById(R.id.positionLimits);
+        inGame_all = findViewById(R.id.inGame_all);
         inGame_m4 = findViewById(R.id.inGame_m4);
         inGame_m3 = findViewById(R.id.inGame_m3);
         inGame_m2 = findViewById(R.id.inGame_m2);
@@ -166,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         angleManual.setOnCheckedChangeListener(angleManualCheckBoxChangeListener);
         positionManual.setOnCheckedChangeListener(positionManualCheckBoxChangeListener);
         isSetState.setOnCheckedChangeListener(isSetStateCheckBoxListner);
+        inGame_all.setOnCheckedChangeListener(inGameAllCheckBoxChangeListener);
         inGame_0.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
         inGame_m1.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
         inGame_m2.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
@@ -255,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
     private CompoundButton.OnCheckedChangeListener inGameCheckBoxChangeListner = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-            setMessage(ChanelEnum.InGame, GetInGameValues());
+            if (needSendMessage) setMessage(ChanelEnum.InGame, GetInGameValues());
         }
     };
 
@@ -276,6 +280,25 @@ public class MainActivity extends AppCompatActivity {
     private int GetInGameCheckBoxValue(boolean isChecked, int multiplier){
         return isChecked ? multiplier : 0;
     }
+
+    /** Обработчик события выбора в checkBox ручной настройки угла закручивания */
+    private CompoundButton.OnCheckedChangeListener inGameAllCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            needSendMessage = false;
+            inGame_0.setChecked(true);
+            inGame_m1.setChecked(isChecked);
+            inGame_m2.setChecked(isChecked);
+            inGame_m3.setChecked(isChecked);
+            inGame_m4.setChecked(isChecked);
+            inGame_p1.setChecked(isChecked);
+            inGame_p2.setChecked(isChecked);
+            inGame_p3.setChecked(isChecked);
+            inGame_p4.setChecked(isChecked);
+            needSendMessage = true;
+            setMessage(ChanelEnum.InGame, isChecked ? 111111111 : 10000);
+        }
+    };
 
     /** Обработчик события выбора в checkBox ручной настройки угла закручивания */
     private CompoundButton.OnCheckedChangeListener angleManualCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
