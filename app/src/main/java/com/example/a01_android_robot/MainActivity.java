@@ -28,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQ_ENABLE_BLUETOOTH = 1001;
 
     private LinearLayout settingsBlock;
-    private LinearLayout workBlock;
+    private ScrollView workBlock;
 
     private Slider angle, position, timePeriod, spinSlider, speedSlider,
             rateSlider_1, rateSlider_2, rateSlider_3, rateSlider_4,
