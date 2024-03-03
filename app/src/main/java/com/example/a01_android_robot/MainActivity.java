@@ -28,12 +28,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
+import com.google.android.material.tabs.TabLayout;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -49,8 +49,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQ_ENABLE_BLUETOOTH = 1001;
 
     private LinearLayout settingsBlock;
-    private ScrollView workBlock;
+    private LinearLayout workBlock;
 
+    private TabLayout tabLayout;
     private Slider angle, position, timePeriod, spinSlider, speedSlider,
             rateSlider_1, rateSlider_2, rateSlider_3, rateSlider_4,
             rateSlider_5, rateSlider_6, rateSlider_7,
@@ -66,12 +67,12 @@ public class MainActivity extends AppCompatActivity {
     //Значение направления выстрела устанавливается вручную
     private CheckBox positionManual;
     /** Чекбоксы выбора будет ли включен в игру набор настроек для определенной степени закручивания мяча (m4 - настройка "-4", p4 - настройка "+4"*/
-    private CheckBox inGame_m4,inGame_m3,inGame_m2,inGame_m1,inGame_0,inGame_p1,inGame_p2,inGame_p3,inGame_p4,inGame_all;
+    private Slider inGame_m4,inGame_m3,inGame_m2,inGame_m1,inGame_0,inGame_p1,inGame_p2,inGame_p3,inGame_p4,inGame_all;
     private TextView speedLimitsLabel;
 
     private Button pushBtn;
     private Button saveBtn;
-    private Button inGameSetSaveBtn;
+    private Button directionSetSaveBtn;
 
     private BluetoothAdapter bluetoothAdapter;
     private ProgressDialog mProgressDialog;
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         timePeriod = findViewById(R.id.time);
         pushBtn = findViewById(R.id.pushBtn);
         saveBtn = findViewById(R.id.saveBtn);
-        inGameSetSaveBtn = findViewById(R.id.inGameSetSaveBtn);
+        directionSetSaveBtn = findViewById(R.id.directionSetSaveBtn);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Соединение...");
@@ -136,16 +137,16 @@ public class MainActivity extends AppCompatActivity {
         rateSlider_7 = findViewById(R.id.rateSlider_7);
         rateSwitcher = findViewById(R.id.rateSwitcher);
         positionLimits = findViewById(R.id.positionLimits);
-        inGame_all = findViewById(R.id.inGame_all);
-        inGame_m4 = findViewById(R.id.inGame_m4);
-        inGame_m3 = findViewById(R.id.inGame_m3);
-        inGame_m2 = findViewById(R.id.inGame_m2);
-        inGame_m1 = findViewById(R.id.inGame_m1);
-        inGame_0 = findViewById(R.id.inGame_0);
-        inGame_p1 = findViewById(R.id.inGame_p1);
-        inGame_p2 = findViewById(R.id.inGame_p2);
-        inGame_p3 = findViewById(R.id.inGame_p3);
-        inGame_p4 = findViewById(R.id.inGame_p4);
+//        inGame_m4 = findViewById(R.id.inGame_m4);
+//        inGame_m3 = findViewById(R.id.inGame_m3);
+//        inGame_m2 = findViewById(R.id.inGame_m2);
+//        inGame_m1 = findViewById(R.id.inGame_m1);
+//        inGame_0 = findViewById(R.id.inGame_0);
+//        inGame_p1 = findViewById(R.id.inGame_p1);
+//        inGame_p2 = findViewById(R.id.inGame_p2);
+//        inGame_p3 = findViewById(R.id.inGame_p3);
+//        inGame_p4 = findViewById(R.id.inGame_p4);
+        tabLayout = findViewById(R.id.tab_layout);
 
 
         //Инициализируем все остальные элементы
@@ -167,21 +168,22 @@ public class MainActivity extends AppCompatActivity {
         positionLimits.addOnChangeListener(positionLimitsSliderListner);
         pushBtn.setOnClickListener(pushBtnListner);
         saveBtn.setOnClickListener(saveBtnListner);
-        inGameSetSaveBtn.setOnClickListener(inGameSetSaveBtnListner);
+        directionSetSaveBtn.setOnClickListener(inGameSetSaveBtnListner);
         is_min.setOnCheckedChangeListener(isMinCheckBoxChangeListner);
         angleManual.setOnCheckedChangeListener(angleManualCheckBoxChangeListener);
         positionManual.setOnCheckedChangeListener(positionManualCheckBoxChangeListener);
         isSetState.setOnCheckedChangeListener(isSetStateCheckBoxListner);
-        inGame_all.setOnCheckedChangeListener(inGameAllCheckBoxChangeListener);
-        inGame_0.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-        inGame_m1.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-        inGame_m2.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-        inGame_m3.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-        inGame_m4.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-        inGame_p1.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-        inGame_p2.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-        inGame_p3.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
-        inGame_p4.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+//        inGame_all.setOnCheckedChangeListener(inGameAllCheckBoxChangeListener);
+//        inGame_0.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+//        inGame_m1.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+//        inGame_m2.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+//        inGame_m3.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+//        inGame_m4.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+//        inGame_p1.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+//        inGame_p2.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+//        inGame_p3.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+//        inGame_p4.setOnCheckedChangeListener(inGameCheckBoxChangeListner);
+        tabLayout.addOnTabSelectedListener(tabSelectedListner);
         //Данные 2 операции необходимы для правильной прорисовки ползунков после смены режима
         isSetState.setChecked(true);
         isSetState.setChecked(false);
@@ -258,46 +260,67 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    /** Обработчик события выбора в одном из checkBox включения набора настроек скорости для определенного режима закручивания мяча */
-    private CompoundButton.OnCheckedChangeListener inGameCheckBoxChangeListner = new CompoundButton.OnCheckedChangeListener() {
+//    /** Обработчик события выбора в одном из checkBox включения набора настроек скорости для определенного режима закручивания мяча */
+//    private CompoundButton.OnCheckedChangeListener inGameCheckBoxChangeListner = new CompoundButton.OnCheckedChangeListener() {
+//        @Override
+//        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+//            if (needSendMessage) setMessage(ChanelEnum.InGame, GetInGameValues());
+//        }
+//    };
+
+    private TabLayout.OnTabSelectedListener tabSelectedListner = new TabLayout.OnTabSelectedListener() {
         @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-            if (needSendMessage) setMessage(ChanelEnum.InGame, GetInGameValues());
+        public void onTabSelected(TabLayout.Tab tab) {
+            switch (tab.getPosition()){
+                case 0: break;
+                default: break;
+            }
+
+        }
+
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
+
         }
     };
 
-    /** Сформировать значение, отправляемое на устройство для набора CheckBox-ов включения в игру настроек закручивания */
-    private int GetInGameValues(){
-        return GetInGameCheckBoxValue(inGame_p4.isChecked(), 100000000) +
-                GetInGameCheckBoxValue(inGame_p3.isChecked(), 10000000) +
-                GetInGameCheckBoxValue(inGame_p2.isChecked(), 1000000) +
-                GetInGameCheckBoxValue(inGame_p1.isChecked(), 100000) +
-                GetInGameCheckBoxValue(inGame_0.isChecked(), 10000) +
-                GetInGameCheckBoxValue(inGame_m1.isChecked(), 1000) +
-                GetInGameCheckBoxValue(inGame_m2.isChecked(), 100) +
-                GetInGameCheckBoxValue(inGame_m3.isChecked(), 10) +
-                GetInGameCheckBoxValue(inGame_m4.isChecked(), 1);
-    }
-
-    /** Сформировать значение, отправляемое на устройство для конкретного CheckBox включения в игру конкретной настройки закручивания */
-    private int GetInGameCheckBoxValue(boolean isChecked, int multiplier){
-        return isChecked ? multiplier : 0;
-    }
+//    /** Сформировать значение, отправляемое на устройство для набора CheckBox-ов включения в игру настроек закручивания */
+//    private int GetInGameValues(){
+//        return GetInGameCheckBoxValue(inGame_p4.isChecked(), 100000000) +
+//                GetInGameCheckBoxValue(inGame_p3.isChecked(), 10000000) +
+//                GetInGameCheckBoxValue(inGame_p2.isChecked(), 1000000) +
+//                GetInGameCheckBoxValue(inGame_p1.isChecked(), 100000) +
+//                GetInGameCheckBoxValue(inGame_0.isChecked(), 10000) +
+//                GetInGameCheckBoxValue(inGame_m1.isChecked(), 1000) +
+//                GetInGameCheckBoxValue(inGame_m2.isChecked(), 100) +
+//                GetInGameCheckBoxValue(inGame_m3.isChecked(), 10) +
+//                GetInGameCheckBoxValue(inGame_m4.isChecked(), 1);
+//    }
+//
+//    /** Сформировать значение, отправляемое на устройство для конкретного CheckBox включения в игру конкретной настройки закручивания */
+//    private int GetInGameCheckBoxValue(boolean isChecked, int multiplier){
+//        return isChecked ? multiplier : 0;
+//    }
 
     /** Обработчик события выбора в checkBox ручной настройки угла закручивания */
     private CompoundButton.OnCheckedChangeListener inGameAllCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             needSendMessage = false;
-            inGame_0.setChecked(true);
-            inGame_m1.setChecked(isChecked);
-            inGame_m2.setChecked(isChecked);
-            inGame_m3.setChecked(isChecked);
-            inGame_m4.setChecked(isChecked);
-            inGame_p1.setChecked(isChecked);
-            inGame_p2.setChecked(isChecked);
-            inGame_p3.setChecked(isChecked);
-            inGame_p4.setChecked(isChecked);
+//            inGame_0.setChecked(true);
+//            inGame_m1.setChecked(isChecked);
+//            inGame_m2.setChecked(isChecked);
+//            inGame_m3.setChecked(isChecked);
+//            inGame_m4.setChecked(isChecked);
+//            inGame_p1.setChecked(isChecked);
+//            inGame_p2.setChecked(isChecked);
+//            inGame_p3.setChecked(isChecked);
+//            inGame_p4.setChecked(isChecked);
             needSendMessage = true;
             setMessage(ChanelEnum.InGame, isChecked ? 111111111 : 10000);
         }
