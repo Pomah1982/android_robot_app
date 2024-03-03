@@ -334,7 +334,8 @@ public class MainActivity extends AppCompatActivity {
             float to = (float) slider.getValues().toArray()[1];
             setMessage(ChanelEnum.PositionStart, (int) from);
             setMessage(ChanelEnum.PositionEnd, (int) to);
-            if(position.getValue() < from || position.getValue() > to) position.setValueTo((from + to)/2);
+            float oldPositionValue = position.getValue();
+            if(oldPositionValue < from || oldPositionValue > to) position.setValue(value);
             position.setValueFrom(from);
             position.setValueTo(to);
             Log.d(TAG, "positionLimitSlider = " + from + "-" + to);
