@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
         position.addOnChangeListener(positionSliderChangeListner);
         timePeriod.addOnChangeListener(timePeriodSliderChangeListner);
         rateSwitcher.addOnChangeListener(rateSwitcherSliderChangeListner);
+        inGameSwitcher.addOnChangeListener(InGameSwitcherSliderChangeListner);
         positionLimits.addOnChangeListener(positionLimitsSliderListner);
         pushBtn.setOnClickListener(pushBtnListner);
         saveBtn.setOnClickListener(saveBtnListner);
@@ -292,17 +293,17 @@ public class MainActivity extends AppCompatActivity {
     };
 
     /** Сформировать значение, отправляемое на устройство для набора участвующих в игре режимов закручивания */
-    private int GetInGameValues(){
-        return (int)(inGameSwitcher.getValue() * 1_000_000_000 +
-                inGameSlider_p4.getValue() * 100_000_000 +
-                inGameSlider_p3.getValue() * 10_000_000 +
-                inGameSlider_p2.getValue() * 1_000_000 +
-                inGameSlider_p1.getValue() * 100_000 +
-                inGameSlider_0.getValue() * 10_000 +
-                inGameSlider_m1.getValue() * 1_000 +
-                inGameSlider_m2.getValue() * 100 +
-                inGameSlider_m3.getValue() * 10 +
-                inGameSlider_m4.getValue());
+    private long GetInGameValues(){
+        return (long)inGameSwitcher.getValue() * 1000000000 +
+                (long) inGameSlider_m4.getValue() * 100000000 +
+                (long) inGameSlider_m3.getValue() * 10000000 +
+                (long) inGameSlider_m2.getValue() * 1000000 +
+                (long) inGameSlider_m1.getValue() * 100000 +
+                (long) inGameSlider_0.getValue() * 10000 +
+                (long) inGameSlider_p1.getValue() * 1000 +
+                (long) inGameSlider_p2.getValue() * 100 +
+                (long) inGameSlider_p3.getValue() * 10 +
+                (long) inGameSlider_p4.getValue();
     }
 
     /** Сформировать значение, отправляемое на устройство для конкретного CheckBox включения в игру конкретной настройки закручивания */
@@ -403,6 +404,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
             setMessage(ChanelEnum.RateSwitcher, (int) value);
+        }
+    };
+
+    /** Обработчик события перемещения ползунка переключения наборов закручивания мяча */
+    private Slider.OnChangeListener InGameSwitcherSliderChangeListner = new Slider.OnChangeListener() {
+        @Override
+        public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+            setMessage(ChanelEnum.InGameSwitcher, (int)value);
         }
     };
 
@@ -549,7 +558,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setMessage(ChanelEnum chanel, int value) {
+    private void setMessage(ChanelEnum chanel, long value) {
         if (connectedThread != null && connectThread.isConnected()) {
             String msg = value + (chanel == ChanelEnum.Spin ? 4 : 0) + chanel.name;
             connectedThread.write(msg.getBytes());
@@ -949,7 +958,9 @@ public class MainActivity extends AppCompatActivity {
         /** Настройки частоты выстрелов по направлениям */
         DirectionSet("D"),
         /** Настройки включения режимов закручивания мяча в игру */
-        InGameSet("G");
+        InGameSet("G"),
+        /** Настройки включения режимов закручивания мяча в игру */
+        InGameSwitcher("E");
 
         private final String name;
 
