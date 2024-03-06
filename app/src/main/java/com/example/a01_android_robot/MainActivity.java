@@ -46,6 +46,7 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
+    private String mkAddress = "00:21:13:00:44:F2";
     private final String TAG = getClass().getSimpleName();
     private static final int REQ_ENABLE_BLUETOOTH = 1001;
 
@@ -186,7 +187,10 @@ public class MainActivity extends AppCompatActivity {
         isSetState.setChecked(true);
         isSetState.setChecked(false);
 
-        enableBluetooth();
+        //enableBluetooth(); //ЭТОТ МЕТОД ВЫЗЫВАЕТСЯ ВНУТРИ searchDevices() НИЖЕ
+
+        // Пробуем соединиться с устройством //TODO:
+        searchDevices();
     }
 
 
@@ -278,7 +282,6 @@ public class MainActivity extends AppCompatActivity {
                     inGameParamsScrollView.setVisibility(View.VISIBLE);
                     break;
             }
-
         }
 
         @Override
@@ -630,7 +633,18 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onReceive: ACTION_DISCOVERY_FINISHED");
                 showToastMessage("Поиск утройств завершен");
                 mProgressDialog.dismiss();
-                showListDevices();
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////TODO: ДОБАВЛЕННЫЙ КОД
+                BluetoothDevice foundDevice = mDevices.stream()
+                        .filter(device -> device.getAddress().equals(mkAddress))
+                        .findFirst()
+                        .orElse(null);
+                if (foundDevice != null) {
+                    // найдено устройство с нужным значением MAC-адреса
+                    connectThread = new ConnectThread(foundDevice);
+                    connectThread.start();
+                }
+                else { showListDevices(); }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////TODO: ДОБАВЛЕННЫЙ КОД
             }
             if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                 Log.d(TAG, "onReceive: ACTION_FOUND");
