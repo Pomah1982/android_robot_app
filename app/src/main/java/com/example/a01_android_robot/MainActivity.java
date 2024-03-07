@@ -340,7 +340,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
             Log.d(TAG, (!fromUser ? "pr_" : "") + "spin = " + value);
-            if(!fromUser) return;
             setMessage(ChanelEnum.Spin, (int) value, fromUser);
         }
     };
@@ -908,8 +907,6 @@ public class MainActivity extends AppCompatActivity {
     private void initialInfrastructure() {
         //Todo реализация установки принятых от робота данных в значения ползунков -- НЕ ПРОВЕРЯЛ КАК РАБОТАЕТ, ЕЛИ НАДО, ТО ОТКОРРЕКТИРОВАТЬ
         // не уверен, что Chanel.mt1 и пр. возвращает строку при обращении к нему
-        is_min.setChecked(true);
-        isSetState.setChecked(false);
         int tmp;
         tmp = Short.parseShort(infrastructureParams.get(is_min.isChecked() ? "x" : "y"));
         speedSlider.setValue(Math.round(tmp/10)*10);
