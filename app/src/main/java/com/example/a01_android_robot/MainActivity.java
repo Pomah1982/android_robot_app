@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             startMode = !startMode;
-            setMessage(ChanelEnum.Start, startMode ? 1 : 0);
+            setMessage(ChanelEnum.Start, startMode ? 1 : 0, true);
             pushBtn.setText(startMode ? "Стоп" : "Пуск");
             Log.d(TAG, "Нажата кнопка Пуск, со значением " + startMode);
         }
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     private View.OnClickListener saveBtnListner = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            setMessage(ChanelEnum.Save, 1);
+            setMessage(ChanelEnum.Save, 1, true);
             Log.d(TAG, "Нажата кнопка Сохранить");
         }
     };
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
     private View.OnClickListener directionSetSaveBtnListner = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            setMessage(ChanelEnum.DirectionSet, GetDirectionSetValue());
+            setMessage(ChanelEnum.DirectionSet, GetDirectionSetValue(), true);
         }
     };
 
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
     private View.OnClickListener inGameSetSaveBtnListner = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            setMessage(ChanelEnum.InGameSet, GetInGameValues());
+            setMessage(ChanelEnum.InGameSet, GetInGameValues(), true);
         }
     };
 
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                         timePeriod.invalidate();
                     }
 
-                    setMessage(ChanelEnum.IsSetState, isChecked ? 1 : 0);
+                    setMessage(ChanelEnum.IsSetState, isChecked ? 1 : 0, true);
                     Log.d(TAG, "isSetState = " + isChecked);
                 }
             };
@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 speedLimitsLabel.setText("max\nSpeed");
             }
-            setMessage(ChanelEnum.IsMin, isChecked ? 1 : 0);
+            setMessage(ChanelEnum.IsMin, isChecked ? 1 : 0, true);
             Log.d(TAG, "is_min = " + isChecked);
         }
     };
@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
     private CompoundButton.OnCheckedChangeListener angleManualCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            setMessage(ChanelEnum.AngleManual, isChecked ? 1 : 0);
+            setMessage(ChanelEnum.AngleManual, isChecked ? 1 : 0, true);
         }
     };
 
@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
             new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    setMessage(ChanelEnum.PositionManual, isChecked ? 1 : 0);
+                    setMessage(ChanelEnum.PositionManual, isChecked ? 1 : 0, true);
                 }
             };
 
@@ -339,8 +339,9 @@ public class MainActivity extends AppCompatActivity {
     private Slider.OnChangeListener spinSliderListner = new Slider.OnChangeListener() {
         @Override
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-            Log.d(TAG, "spin = " + value);
-            setMessage(ChanelEnum.Spin, (int) value);
+            Log.d(TAG, (!fromUser ? "pr_" : "") + "spin = " + value);
+            if(!fromUser) return;
+            setMessage(ChanelEnum.Spin, (int) value, fromUser);
         }
     };
 
@@ -350,30 +351,30 @@ public class MainActivity extends AppCompatActivity {
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
             int val = (int) value;
             if (is_min.isChecked()) {   // если это установка минимального значения
-                Log.d(TAG, "minSpeed = " + value);
+                Log.d(TAG, (!fromUser ? "pr_" : "") + "minSpeed = " + value);
                 if (val >= speedMax) {
                     if (speedMin < speedMax) {
                         speedMin = speedMax;
-                        setMessage(ChanelEnum.SpeedStart, speedMin);
+                        setMessage(ChanelEnum.SpeedStart, speedMin, fromUser);
                     }
                     speedSlider.setValue(speedMax);
                     return;
                 }
                 speedMin = val;
-                setMessage(ChanelEnum.SpeedStart, val);
+                setMessage(ChanelEnum.SpeedStart, val, fromUser);
             } else {  //Если это максимальное значение
-                Log.d(TAG, "maxSpeed = " + value);
+                Log.d(TAG, (!fromUser ? "pr_" : "") + "maxSpeed = " + value);
 
                 if (val <= speedMin) {
                     if (speedMax > speedMin) {
                         speedMax = speedMin;
-                        setMessage(ChanelEnum.SpeedEnd, speedMax);
+                        setMessage(ChanelEnum.SpeedEnd, speedMax, fromUser);
                     }
                     speedSlider.setValue(speedMin);
                     return;
                 }
                 speedMax = val;
-                setMessage(ChanelEnum.SpeedEnd, val);
+                setMessage(ChanelEnum.SpeedEnd, val, fromUser);
             }
         }
     };
@@ -382,8 +383,8 @@ public class MainActivity extends AppCompatActivity {
     private Slider.OnChangeListener angleSliderListner = new Slider.OnChangeListener() {
         @Override
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-            Log.d(TAG, "angle = " + value);
-            setMessage(ChanelEnum.Angle, (int) value);
+            Log.d(TAG, (!fromUser ? "pr_" : "") + "angle = " + value);
+            setMessage(ChanelEnum.Angle, (int) value, fromUser);
         }
     };
 
@@ -391,8 +392,8 @@ public class MainActivity extends AppCompatActivity {
     private Slider.OnChangeListener positionSliderChangeListner = new Slider.OnChangeListener() {
         @Override
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-            Log.d(TAG, "position = " + value);
-            setMessage(ChanelEnum.Position, (int) value);
+            Log.d(TAG, (!fromUser ? "pr_" : "") + "position = " + value);
+            setMessage(ChanelEnum.Position, (int) value, fromUser);
         }
     };
 
@@ -400,8 +401,8 @@ public class MainActivity extends AppCompatActivity {
     private Slider.OnChangeListener timePeriodSliderChangeListner = new Slider.OnChangeListener() {
         @Override
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-            Log.d(TAG, "time = " + value);
-            setMessage(ChanelEnum.TimePeriod, (int) value);
+            Log.d(TAG, (!fromUser ? "pr_" : "") + "time = " + value);
+            setMessage(ChanelEnum.TimePeriod, (int) value, fromUser);
         }
     };
 
@@ -409,7 +410,8 @@ public class MainActivity extends AppCompatActivity {
     private Slider.OnChangeListener rateSwitcherSliderChangeListner = new Slider.OnChangeListener() {
         @Override
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-            setMessage(ChanelEnum.RateSwitcher, (int) value);
+            Log.d(TAG, (!fromUser ? "pr_" : "") + "RateSwitcher = " + value);
+            setMessage(ChanelEnum.RateSwitcher, (int) value, fromUser);
         }
     };
 
@@ -417,7 +419,8 @@ public class MainActivity extends AppCompatActivity {
     private Slider.OnChangeListener InGameSwitcherSliderChangeListner = new Slider.OnChangeListener() {
         @Override
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-            setMessage(ChanelEnum.InGameSwitcher, (int)value);
+            Log.d(TAG, (!fromUser ? "pr_" : "") + "InGameSwitcher = " + value);
+            setMessage(ChanelEnum.InGameSwitcher, (int)value, fromUser);
         }
     };
 
@@ -427,8 +430,8 @@ public class MainActivity extends AppCompatActivity {
         public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
             float from = (float) slider.getValues().toArray()[0];
             float to = (float) slider.getValues().toArray()[1];
-            setMessage(ChanelEnum.PositionStart, (int) from);
-            setMessage(ChanelEnum.PositionEnd, (int) to);
+            setMessage(ChanelEnum.PositionStart, (int) from, fromUser);
+            setMessage(ChanelEnum.PositionEnd, (int) to, fromUser);
             float oldPositionValue = position.getValue();
             if(oldPositionValue < from || oldPositionValue > to) position.setValue(value);
             position.setValueFrom(from);
@@ -564,7 +567,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setMessage(ChanelEnum chanel, long value) {
+    private void setMessage(ChanelEnum chanel, long value, boolean needSendMessage) {
+        if(!needSendMessage) return;
         if (connectedThread != null && connectThread.isConnected()) {
             String msg = value + (chanel == ChanelEnum.Spin ? 4 : 0) + chanel.name;
             connectedThread.write(msg.getBytes());
@@ -725,7 +729,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         //Запрашиваем у робота его текущие настройки для обновления в android
-                        setMessage(ChanelEnum.Limits, 0);
+                        setMessage(ChanelEnum.Limits, 0, true);
                         limitsRequested = true;
 //                        setMessage(ChanelEnum.Get, 0);
 
@@ -789,7 +793,7 @@ public class MainActivity extends AppCompatActivity {
                         if (limitsRequested) {
                             parseReceivedDataAndSetLimits(buffer.toString().split("\\|"));// парсим и устанавливаем лимиты
                             limitsRequested = false;    //Сбрасываем флаг установки лимитов
-                            setMessage(ChanelEnum.Get, 0); //После получения данных о лимитах делаем запрос на STM для получения текущих значений инфраструктуры
+                            setMessage(ChanelEnum.Get, 0, true); //После получения данных о лимитах делаем запрос на STM для получения текущих значений инфраструктуры
                         }
                         else {//Если это последующие запросы, то устанавливаем значения инфраструктуры
                             parseReciviedDataAndSetInfrParams(buffer.toString());
