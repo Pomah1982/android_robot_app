@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     //Значение направления выстрела устанавливается вручную
     private CheckBox positionManual;
     private TextView speedLimitsLabel;
+    private TextView messageTextBox;
 
     private Button pushBtn;
     private Button saveBtn;
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
     private int maxTime = 3000; // выстрел каждые 3 секунды
     private int speedMin = 850; //значение минимума скорости, необходимое при смене режима настроек с минимума на максимум
     private int speedMax = 970; //значение максимума скорости, необходимое при смене режима настроек с минимума на максимум
+    private String messageString = ""; //сообщение, отправляемое на устройство. отображается внизу экрана android
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         angleManual = findViewById(R.id.angleManual);
         positionManual = findViewById(R.id.positionManual);
         speedLimitsLabel =findViewById(R.id.speedLimitsLabel);
+        messageTextBox = findViewById(R.id.messageTextBox);
         spinSlider = findViewById(R.id.spinSlider);
         speedSlider = findViewById(R.id.speedSlider);
         angle = findViewById(R.id.angle);
@@ -236,14 +239,14 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     if (isChecked) {
-                        isSetState.setText("Режим настроек");
+                        isSetState.setText("Настройки");
                         settingsBlock.setVisibility(View.VISIBLE);
                         workBlock.setVisibility(View.GONE);
                         angle.invalidate();
                         position.invalidate();
                         timePeriod.invalidate();
                     } else {
-                        isSetState.setText("Рабочий режим");
+                        isSetState.setText("Игра");
                         settingsBlock.setVisibility(View.GONE);
                         workBlock.setVisibility(View.VISIBLE);
                         angle.invalidate();
@@ -566,7 +569,9 @@ public class MainActivity extends AppCompatActivity {
             String msg = value + (chanel == ChanelEnum.Spin ? 4 : 0) + chanel.name;
             connectedThread.write(msg.getBytes());
             Log.d(TAG, msg);
+            messageTextBox.setText(msg);
         }
+        else{messageTextBox.setText("NoConnect");}
     }
 
     private void startConnection(BluetoothDevice device) {
