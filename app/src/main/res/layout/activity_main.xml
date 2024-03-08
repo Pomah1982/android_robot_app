@@ -126,24 +126,39 @@
             android:layout_height="360dp"
             android:orientation="vertical">
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tab_layout"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginTop="-15dp"
-                android:layout_marginBottom="10dp">
+                android:orientation="horizontal">
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab_layout"
+                    android:layout_width="0dp"
+                    android:layout_weight="7"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="-15dp"
+                    android:layout_marginBottom="10dp">
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="match_parent"
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Направления"/>
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Набор &quot;В игре&quot;"/>
+
+                </com.google.android.material.tabs.TabLayout>
+
+                <CheckBox
+                    android:id="@+id/saveSetInFlash"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="match_parent"
-                    android:text="Направления"/>
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Набор &quot;В игре&quot;"/>
-
-            </com.google.android.material.tabs.TabLayout>
+                    android:layout_marginTop="-20dp"
+                    android:checked="false"
+                    android:text="Temp"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/directionsLayout"
@@ -240,7 +255,7 @@
                     <Button
                         android:id="@+id/directionSetSaveBtn"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="50dp"
                         android:layout_weight="2"
                         android:text="V"
                         android:textAlignment="center"
@@ -370,7 +385,7 @@
                         <Button
                             android:id="@+id/inGameSetSaveBtn"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="50dp"
                             android:layout_weight="2"
                             android:text="V"
                             android:textAlignment="center"

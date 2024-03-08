@@ -61,14 +61,16 @@ public class MainActivity extends AppCompatActivity {
             inGameSlider_p1,inGameSlider_p2,inGameSlider_p3,inGameSlider_p4, inGameSwitcher;
     private RangeSlider positionLimits;
 
-    //Включена настройка минимума скорости
+    /** Включена настройка минимума скорости */
     private CheckBox is_min;
-    //Это режим настроек
+    /** Это режим настроек */
     private CheckBox isSetState;
-    //Значение угла закручивания устанавливается вручную
+    /** Значение угла закручивания устанавливается вручную */
     private CheckBox angleManual;
-    //Значение направления выстрела устанавливается вручную
+    /** Значение направления выстрела устанавливается вручную */
     private CheckBox positionManual;
+    /** Настройки наборов "Направление" и "В игре" будут сохраняться во flash память контроллера */
+    private CheckBox saveSetInFlash;
     private TextView speedLimitsLabel;
     private TextView messageTextBox;
 
@@ -121,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         isSetState = findViewById(R.id.isSetState);
         angleManual = findViewById(R.id.angleManual);
         positionManual = findViewById(R.id.positionManual);
+        saveSetInFlash = findViewById(R.id.saveSetInFlash);
         speedLimitsLabel =findViewById(R.id.speedLimitsLabel);
         messageTextBox = findViewById(R.id.messageTextBox);
         spinSlider = findViewById(R.id.spinSlider);
@@ -184,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
         angleManual.setOnCheckedChangeListener(angleManualCheckBoxChangeListener);
         positionManual.setOnCheckedChangeListener(positionManualCheckBoxChangeListener);
         isSetState.setOnCheckedChangeListener(isSetStateCheckBoxListner);
+        saveSetInFlash.setOnCheckedChangeListener(saveSetInFlashCheckBoxListner);
         tabLayout.addOnTabSelectedListener(tabSelectedListner);
 
         //Данные 2 операции необходимы для правильной прорисовки ползунков после смены режима
@@ -273,6 +277,16 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    /** Обработчик события выбора в checkBox варианта сохранения данных сетов настроек "Направлениz" и "В игре": flash|temp */
+    private CompoundButton.OnCheckedChangeListener saveSetInFlashCheckBoxListner = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+            saveSetInFlash.setText(isChecked ? "Flash" : "Temp");
+            setMessage(ChanelEnum.SaveSetInFlash, isChecked ? 1 : 0, true);
+            Log.d(TAG, "SaveSetInFlash = " + isChecked);
+        }
+    };
+
     /** Обработчик события выбора вкладки для настроек "Направления"/"Набор в игре" */
     private TabLayout.OnTabSelectedListener tabSelectedListner = new TabLayout.OnTabSelectedListener() {
         @Override
@@ -285,6 +299,7 @@ public class MainActivity extends AppCompatActivity {
                     inGameParamsScrollView.setVisibility(View.VISIBLE);
                     break;
             }
+            saveSetInFlash.setChecked(false);//при переключении между вкладками сбрасываем значение checkBox сохранения во flash в deafult == false
         }
 
         @Override
@@ -311,12 +326,6 @@ public class MainActivity extends AppCompatActivity {
                 (long) inGameSlider_p3.getValue() * 10 +
                 (long) inGameSlider_p4.getValue();
     }
-
-    /** Сформировать значение, отправляемое на устройство для конкретного CheckBox включения в игру конкретной настройки закручивания */
-    private int GetInGameCheckBoxValue(boolean isChecked, int multiplier){
-        return isChecked ? multiplier : 0;
-    }
-
 
     /** Обработчик события выбора в checkBox ручной настройки угла закручивания */
     private CompoundButton.OnCheckedChangeListener angleManualCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -980,7 +989,9 @@ public class MainActivity extends AppCompatActivity {
         /** Настройки включения режимов закручивания мяча в игру */
         InGameSet("G"),
         /** Настройки включения режимов закручивания мяча в игру */
-        InGameSwitcher("E");
+        InGameSwitcher("E"),
+        /** Сохранить данные наборов настроек "Направления" и "В игре" во flash */
+        SaveSetInFlash("T");
 
         private final String name;
 
