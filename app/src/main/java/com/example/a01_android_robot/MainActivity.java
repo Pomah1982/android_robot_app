@@ -1,5 +1,7 @@
 package com.example.a01_android_robot;
 
+import static com.example.a01_android_robot.MainActivity.ChanelEnum.SaveSetInFlash;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
     /** Настройки наборов "Направление" и "В игре" будут сохраняться во flash память контроллера */
     private CheckBox saveSetInFlash;
     private TextView speedLimitsLabel;
-    private TextView messageTextBox;
+    private TextView inMessageTextBox;
+    private TextView outMessageTextBox;
 
     private Button pushBtn;
     private Button saveBtn;
@@ -125,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
         positionManual = findViewById(R.id.positionManual);
         saveSetInFlash = findViewById(R.id.saveSetInFlash);
         speedLimitsLabel =findViewById(R.id.speedLimitsLabel);
-        messageTextBox = findViewById(R.id.messageTextBox);
+        outMessageTextBox = findViewById(R.id.outMessageTextBox);
+        inMessageTextBox = findViewById(R.id.inMessageTextBox);
         spinSlider = findViewById(R.id.spinSlider);
         speedSlider = findViewById(R.id.speedSlider);
         angle = findViewById(R.id.angle);
@@ -282,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
             saveSetInFlash.setText(isChecked ? "Flash" : "Temp");
-            setMessage(ChanelEnum.SaveSetInFlash, isChecked ? 1 : 0, true);
+            setMessage(SaveSetInFlash, isChecked ? 1 : 0, true);
             Log.d(TAG, "SaveSetInFlash = " + isChecked);
         }
     };
@@ -581,9 +586,11 @@ public class MainActivity extends AppCompatActivity {
             String msg = value + (chanel == ChanelEnum.Spin ? 4 : 0) + chanel.name;
             connectedThread.write(msg.getBytes());
             Log.d(TAG, msg);
-            messageTextBox.setText(msg);
+            outMessageTextBox.setTextColor(Color.parseColor("#ffffff"));
+            outMessageTextBox.setText(msg);
+            inMessageTextBox.setTextColor(Color.parseColor("#f21717"));
         }
-        else{messageTextBox.setText("NoConnect");}
+        else{outMessageTextBox.setText("NoConnect");}
     }
 
     private void startConnection(BluetoothDevice device) {
@@ -831,6 +838,14 @@ public class MainActivity extends AppCompatActivity {
                 String[] keyVal = unit.split(":");
                 infrastructureParams.put(keyVal[0], keyVal[1]);
             }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    inMessageTextBox.setTextColor(Color.parseColor("#ffffff"));
+                    inMessageTextBox.setText(data);
+                    outMessageTextBox.setTextColor(Color.parseColor("#f21717"));
+                }
+            });
         }
 
         //Парсит полученные от робота данные уже разделенные по символу "|" и устанавливает значения лимитов для ползунков
