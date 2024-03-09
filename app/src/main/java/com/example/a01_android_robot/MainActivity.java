@@ -1,6 +1,7 @@
 package com.example.a01_android_robot;
 
 import static com.example.a01_android_robot.MainActivity.ChanelEnum.SaveSetInFlash;
+import static com.example.a01_android_robot.MainActivity.ChanelEnum.Angle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -274,7 +275,9 @@ public class MainActivity extends AppCompatActivity {
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
             if (isChecked) {
                 speedLimitsLabel.setText("min\nSpeed");
+                speedSlider.setValue(speedMin);
             } else {
+                speedSlider.setValue(speedMax);
                 speedLimitsLabel.setText("max\nSpeed");
             }
             setMessage(ChanelEnum.IsMin, isChecked ? 1 : 0, true);
@@ -812,12 +815,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else {//Если это последующие запросы, то устанавливаем значения инфраструктуры
                             parseReciviedDataAndSetInfrParams(buffer.toString());
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    initialInfrastructure();
-                                }
-                            });
+//                            String bufferStr = buffer.toString();
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    initialInfrastructure(bufferStr);
+//                                }
+//                            });
                         }
 
                         buffer = buffer.delete(0,buffer.length());//Очищаем буфер для предотвращения дополнения старых данных вновь полученными
@@ -834,6 +838,7 @@ public class MainActivity extends AppCompatActivity {
         //Парсит полученные от робота данные и устанавливает полученные параметры в HashMap infrastructureParams
         private void parseReciviedDataAndSetInfrParams(String data) {
             String[] units = data.split("\\|");
+            infrastructureParams.clear();
             for (String unit: units) {
                 String[] keyVal = unit.split(":");
                 infrastructureParams.put(keyVal[0], keyVal[1]);
@@ -841,6 +846,57 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    infrastructureParams.forEach((key, value) -> {
+                        final short tmp;
+                        switch (key) {
+                            case "x":
+                                speedMin = Math.round((int)Short.parseShort(value)/10)*10;
+                                if (is_min.isChecked()) speedSlider.setValue(speedMin);
+                                break;
+                            case "y":
+                                speedMax = Math.round((int)Short.parseShort(value)/10)*10;
+                                if (!is_min.isChecked()) speedSlider.setValue(speedMax);
+                                break;
+                            case "r":
+                                spinSlider.setValue(Short.parseShort(value));
+                                break;
+                            case "a":
+                                tmp = Short.parseShort(value);
+                                angle.setValue(Math.round((tmp == 0 ? (minAngle + maxAngle)/ 2 : tmp)/10)*10);
+                                break;
+                            case "p":
+                                tmp = Short.parseShort(value);
+                                position.setValue(Math.round((tmp == 0 ? (minPosition + maxPosition)/ 2 : tmp)/10)*10);
+                                break;
+                            case "t":
+                                tmp = Short.parseShort(value);
+                                timePeriod.setValue(tmp == 0 ? minTime + 1 : tmp);
+                                break;
+                            case "D":
+                                rateSwitcher.setValue((int)value.charAt(0) - 48);
+                                rateSlider_1.setValue((int)value.charAt(1) - 48);
+                                rateSlider_2.setValue((int)value.charAt(2) - 48);
+                                rateSlider_3.setValue((int)value.charAt(3) - 48);
+                                rateSlider_4.setValue((int)value.charAt(4) - 48);
+                                rateSlider_5.setValue((int)value.charAt(5) - 48);
+                                rateSlider_6.setValue((int)value.charAt(6) - 48);
+                                rateSlider_7.setValue((int)value.charAt(7) - 48);
+                                break;
+                            case "G":
+                                inGameSwitcher.setValue((int)value.charAt(0) - 48);
+                                inGameSlider_m4.setValue((int)value.charAt(1) - 48);
+                                inGameSlider_m3.setValue((int)value.charAt(2) - 48);
+                                inGameSlider_m2.setValue((int)value.charAt(3) - 48);
+                                inGameSlider_m1.setValue((int)value.charAt(4) - 48);
+                                inGameSlider_0.setValue((int)value.charAt(5) - 48);
+                                inGameSlider_p1.setValue((int)value.charAt(6) - 48);
+                                inGameSlider_p2.setValue((int)value.charAt(7) - 48);
+                                inGameSlider_p3.setValue((int)value.charAt(8) - 48);
+                                inGameSlider_p4.setValue((int)value.charAt(9) - 48);
+                                break;
+                        }
+                    });
+
                     inMessageTextBox.setTextColor(Color.parseColor("#ffffff"));
                     inMessageTextBox.setText(data);
                     outMessageTextBox.setTextColor(Color.parseColor("#f21717"));
@@ -926,44 +982,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void initialInfrastructure() {
-        //Todo реализация установки принятых от робота данных в значения ползунков -- НЕ ПРОВЕРЯЛ КАК РАБОТАЕТ, ЕЛИ НАДО, ТО ОТКОРРЕКТИРОВАТЬ
-        // не уверен, что Chanel.mt1 и пр. возвращает строку при обращении к нему
-        int tmp;
-        tmp = Short.parseShort(infrastructureParams.get(is_min.isChecked() ? "x" : "y"));
-        speedSlider.setValue(Math.round(tmp/10)*10);
-        tmp = Short.parseShort(infrastructureParams.get("r"));
-        spinSlider.setValue(tmp);
-        tmp = Short.parseShort(infrastructureParams.get("a"));
-        angle.setValue(Math.round((tmp == 0 ? (minAngle + maxAngle)/ 2 : tmp)/10)*10);
-        tmp = Short.parseShort(infrastructureParams.get("p"));
-        position.setValue(Math.round((tmp == 0 ? (minPosition + maxPosition)/ 2 : tmp)/10)*10);
-        tmp = Short.parseShort(infrastructureParams.get("t"));
-        timePeriod.setValue(tmp == 0 ? minTime + 1 : tmp);
-        String directionSet = infrastructureParams.get("D");
-        Log.d(TAG, directionSet);
-        rateSwitcher.setValue((int)directionSet.charAt(0) - 48);
-        rateSlider_1.setValue((int)directionSet.charAt(1) - 48);
-        rateSlider_2.setValue((int)directionSet.charAt(2) - 48);
-        rateSlider_3.setValue((int)directionSet.charAt(3) - 48);
-        rateSlider_4.setValue((int)directionSet.charAt(4) - 48);
-        rateSlider_5.setValue((int)directionSet.charAt(5) - 48);
-        rateSlider_6.setValue((int)directionSet.charAt(6) - 48);
-        rateSlider_7.setValue((int)directionSet.charAt(7) - 48);
-        String inGameSet = infrastructureParams.get("G");
-        Log.d(TAG, inGameSet);
-        inGameSwitcher.setValue((int)inGameSet.charAt(0) - 48);
-        inGameSlider_m4.setValue((int)inGameSet.charAt(1) - 48);
-        inGameSlider_m3.setValue((int)inGameSet.charAt(2) - 48);
-        inGameSlider_m2.setValue((int)inGameSet.charAt(3) - 48);
-        inGameSlider_m1.setValue((int)inGameSet.charAt(4) - 48);
-        inGameSlider_0.setValue((int)inGameSet.charAt(5) - 48);
-        inGameSlider_p1.setValue((int)inGameSet.charAt(6) - 48);
-        inGameSlider_p2.setValue((int)inGameSet.charAt(7) - 48);
-        inGameSlider_p3.setValue((int)inGameSet.charAt(8) - 48);
-        inGameSlider_p4.setValue((int)inGameSet.charAt(9) - 48);
     }
 
     //Enum команд
