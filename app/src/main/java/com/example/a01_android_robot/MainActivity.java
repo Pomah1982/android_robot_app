@@ -896,6 +896,9 @@ public class MainActivity extends AppCompatActivity {
                                 inGameSlider_p3.setValue((int)value.charAt(8) - 48);
                                 inGameSlider_p4.setValue((int)value.charAt(9) - 48);
                                 break;
+                            case "Z":
+                                inMessageTextBox.setText(value);
+                                break;
                         }
                     });
 
