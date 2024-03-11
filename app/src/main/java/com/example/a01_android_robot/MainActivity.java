@@ -848,6 +848,8 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     infrastructureParams.forEach((key, value) -> {
                         final short tmp;
+                        Log("RecivedData: " + key + " : " + value);
+
                         switch (key) {
                             case "x":
                                 speedMin = Math.round((int)Short.parseShort(value)/10)*10;
@@ -921,7 +923,6 @@ public class MainActivity extends AppCompatActivity {
 
         public void setLimits(String key, int min, int max){
             //Устанавливаем максимальные и минимальные значения для всех ползунков
-//            SeekBar infItem;
             switch (key){
                 case "a":
                     angle.setValueFrom(Math.round(min/10)*10);
@@ -982,6 +983,11 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    /** Логирование данных */
+    public void Log(String message) {
+        Log.d(TAG, message);
     }
 
     //Enum команд
