@@ -120,10 +120,23 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="-10dp"
-                    android:layout_weight="5"
+                    android:layout_weight="7"
                     app:labelBehavior="visible"
                     android:valueFrom="0"
-                    android:valueTo="100"
+                    android:valueTo="50"
+                    android:value="10"
+                    android:stepSize="1"/>
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/SetPauseSlider"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="-10dp"
+                    android:layout_marginRight="-15dp"
+                    android:layout_weight="2"
+                    app:labelBehavior="visible"
+                    android:valueFrom="0"
+                    android:valueTo="3"
                     android:stepSize="1"/>
 
                 <TextView
@@ -135,7 +148,7 @@
                     android:layout_weight="1"
                     android:paddingVertical="15dp"
                     android:text="Set"
-                    android:textSize="15dp" />
+                    android:textSize="17dp" />
             </LinearLayout>
 
             <Button

@@ -1,7 +1,6 @@
 package com.example.a01_android_robot;
 
 import static com.example.a01_android_robot.MainActivity.ChanelEnum.SaveSetInFlash;
-import static com.example.a01_android_robot.MainActivity.ChanelEnum.Angle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
             rateSlider_1, rateSlider_2, rateSlider_3, rateSlider_4,
             rateSlider_5, rateSlider_6, rateSlider_7, rateSwitcher,
             inGameSlider_m4,inGameSlider_m3, inGameSlider_m2,inGameSlider_m1,inGameSlider_0,
-            inGameSlider_p1,inGameSlider_p2,inGameSlider_p3,inGameSlider_p4, inGameSwitcher;
+            inGameSlider_p1,inGameSlider_p2,inGameSlider_p3,inGameSlider_p4, inGameSwitcher,
+            SetSlider, SetPauseSlider;
     private RangeSlider positionLimits;
 
     /** Включена настройка минимума скорости */
@@ -166,6 +166,8 @@ public class MainActivity extends AppCompatActivity {
         inGameSlider_p3 = findViewById(R.id.inGameSlider_p3);
         inGameSlider_p4 = findViewById(R.id.inGameSlider_p4);
         inGameSwitcher = findViewById(R.id.inGameSwitcher);
+        SetSlider = findViewById(R.id.SetSlider);
+        SetPauseSlider = findViewById(R.id.SetPauseSlider);
         tabLayout = findViewById(R.id.tab_layout);
 
 
@@ -186,6 +188,8 @@ public class MainActivity extends AppCompatActivity {
         timePeriod.addOnChangeListener(timePeriodSliderChangeListner);
         rateSwitcher.addOnChangeListener(rateSwitcherSliderChangeListner);
         inGameSwitcher.addOnChangeListener(InGameSwitcherSliderChangeListner);
+        SetSlider.addOnChangeListener(SetSliderChangeListner);
+        SetPauseSlider.addOnChangeListener(SetPauseSliderChangeListner);
         positionLimits.addOnChangeListener(positionLimitsSliderListner);
         pushBtn.setOnClickListener(pushBtnListner);
         saveBtn.setOnClickListener(saveBtnListner);
@@ -439,6 +443,24 @@ public class MainActivity extends AppCompatActivity {
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
             Log.d(TAG, (!fromUser ? "pr_" : "") + "InGameSwitcher = " + value);
             setMessage(ChanelEnum.InGameSwitcher, (int)value, fromUser);
+        }
+    };
+
+    /** Обработчик события перемещения ползунка выбора количества мячей в игровом сете */
+    private Slider.OnChangeListener SetSliderChangeListner = new Slider.OnChangeListener() {
+        @Override
+        public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+            Log((!fromUser ? "pr_" : "") + "SetSlider = " + value);
+            setMessage(ChanelEnum.Set, (int)value, fromUser);
+        }
+    };
+
+    /** Обработчик события перемещения ползунка выбора продолжительности паузы между игровыми сетами */
+    private Slider.OnChangeListener SetPauseSliderChangeListner = new Slider.OnChangeListener() {
+        @Override
+        public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+            Log((!fromUser ? "pr_" : "") + "SetPauseSlider = " + value);
+            setMessage(ChanelEnum.SetPause, (int)value, fromUser);
         }
     };
 
@@ -1035,7 +1057,11 @@ public class MainActivity extends AppCompatActivity {
         /** Настройки включения режимов закручивания мяча в игру */
         InGameSwitcher("E"),
         /** Сохранить данные наборов настроек "Направления" и "В игре" во flash */
-        SaveSetInFlash("T");
+        SaveSetInFlash("T"),
+        /** Выбор количества мячей в игровом сете */
+        Set("S"),
+        /** Выбор продолжительности паузы между игровыми сетами */
+        SetPause("s");
 
         private final String name;
 
