@@ -491,11 +491,18 @@
                 android:checked="false"/>
 
             <TextView
+                android:id="@+id/logTextBox"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"/>
+
+            <TextView
                 android:id="@+id/inMessageTextBox"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textAlignment="textEnd"/>
+                android:textAlignment="center"/>
 
             <TextView
                 android:id="@+id/outMessageTextBox"

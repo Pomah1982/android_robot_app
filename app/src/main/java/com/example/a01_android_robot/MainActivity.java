@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView speedLimitsLabel;
     private TextView inMessageTextBox;
     private TextView outMessageTextBox;
+    private TextView logTextBox;
 
     private Button pushBtn;
     private Button saveBtn;
@@ -132,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         speedLimitsLabel =findViewById(R.id.speedLimitsLabel);
         outMessageTextBox = findViewById(R.id.outMessageTextBox);
         inMessageTextBox = findViewById(R.id.inMessageTextBox);
+        logTextBox = findViewById(R.id.logTextBox);
         spinSlider = findViewById(R.id.spinSlider);
         speedSlider = findViewById(R.id.speedSlider);
         angle = findViewById(R.id.angle);
@@ -897,7 +899,7 @@ public class MainActivity extends AppCompatActivity {
                                 inGameSlider_p4.setValue((int)value.charAt(9) - 48);
                                 break;
                             case "Z":
-                                inMessageTextBox.setText(value);
+                                logTextBox.setText(value);
                                 break;
                         }
                     });
