@@ -862,6 +862,8 @@ public class MainActivity extends AppCompatActivity {
         //Парсит полученные от робота данные и устанавливает полученные параметры в HashMap infrastructureParams
         private void parseReciviedDataAndSetInfrParams(String data) {
             String[] units = data.split("\\|");
+            HashMap<String, String> tmpParams = new HashMap<>(infrastructureParams);
+
             infrastructureParams.clear();
             for (String unit: units) {
                 String[] keyVal = unit.split(":");
@@ -870,7 +872,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    infrastructureParams.forEach((key, value) -> {
+                    tmpParams.forEach((key, value) -> {
                         final short tmp;
                         Log("RecivedData: " + key + " : " + value);
 
