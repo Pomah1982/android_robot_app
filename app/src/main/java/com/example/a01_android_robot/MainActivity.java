@@ -923,7 +923,12 @@ public class MainActivity extends AppCompatActivity {
                             case "Z":
                                 logTextBox.setText(value);
                                 break;
-                        }
+                            case "S":
+                                SetSlider.setValue(Short.parseShort(value));
+                                break;
+                            case "s":
+                                SetPauseSlider.setValue(Short.parseShort(value));
+                                break;                        }
                     });
 
                     inMessageTextBox.setTextColor(Color.parseColor("#ffffff"));
