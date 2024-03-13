@@ -99,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, String> infrastructureParams = new HashMap<String, String>() {};
     //Запрошены лимиты - это первый запрос к STM
     private boolean limitsRequested;
+    /** Это первая установка значения timeSlider. Необходимо отправить сообщение об установке для запуска механизма инициализации времени на stm */
+    private boolean firstTimeSending = true;
     private boolean startMode = false;
     /** Необходимо отправить сообщение с value события. Необходимо для некоторых CheckBox (inGame) */
     private boolean needSendMessage = true;
@@ -423,8 +425,9 @@ public class MainActivity extends AppCompatActivity {
     private Slider.OnChangeListener timePeriodSliderChangeListner = new Slider.OnChangeListener() {
         @Override
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-            Log.d(TAG, (!fromUser ? "pr_" : "") + "time = " + value);
-            setMessage(ChanelEnum.TimePeriod, (int) value, fromUser);
+            firstTimeSending = false;
+            Log.d(TAG, (!fromUser ? "pr_" : "") + (firstTimeSending ? "f_" : "") + "time = " + value);
+            setMessage(ChanelEnum.TimePeriod, (int) value, fromUser || firstTimeSending);
         }
     };
 
