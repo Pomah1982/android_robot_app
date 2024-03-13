@@ -684,7 +684,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onReceive: ACTION_DISCOVERY_FINISHED");
                 showToastMessage("Поиск утройств завершен");
                 mProgressDialog.dismiss();
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////TODO: ДОБАВЛЕННЫЙ КОД
                 BluetoothDevice foundDevice = mDevices.stream()
                         .filter(device -> device.getAddress().equals(mkAddress))
                         .findFirst()
@@ -695,7 +694,6 @@ public class MainActivity extends AppCompatActivity {
                     connectThread.start();
                 }
                 else { showListDevices(); }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////TODO: ДОБАВЛЕННЫЙ КОД
             }
             if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                 Log.d(TAG, "onReceive: ACTION_FOUND");
@@ -839,13 +837,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else {//Если это последующие запросы, то устанавливаем значения инфраструктуры
                             parseReciviedDataAndSetInfrParams(buffer.toString());
-//                            String bufferStr = buffer.toString();
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    initialInfrastructure(bufferStr);
-//                                }
-//                            });
                         }
 
                         buffer = buffer.delete(0,buffer.length());//Очищаем буфер для предотвращения дополнения старых данных вновь полученными
