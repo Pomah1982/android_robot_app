@@ -887,7 +887,7 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case "p":
                                 tmp = Short.parseShort(value);
-                                position.setValue(Math.round((tmp == 0 ? (minPosition + maxPosition)/ 2 : tmp)/10)*10);
+                                position.setValue(tmp == 0 ? (Math.round((position.getValueFrom() + position.getValueTo())/ 14)*7) : tmp);
                                 break;
                             case "t":
                                 tmp = Short.parseShort(value);
@@ -958,12 +958,12 @@ public class MainActivity extends AppCompatActivity {
                     angle.setStepSize(10);
                     break;
                 case "p":
-                    int from = Math.round(min/10)*10;
-                    int to = Math.round(max/10)*10;
+                    int from = min;
+                    int to = max;
                     position.setValueFrom(from);
                     position.setValueTo(to);
                     position.setValue(from);
-                    position.setStepSize(10);
+                    position.setStepSize(7);
                     positionLimits.setValues((float)from, (float)to);
                     break;
                 case "t":

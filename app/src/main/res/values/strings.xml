@@ -2,6 +2,6 @@
     <string name="app_name">01_android_robot</string>
     <string-array name="rangeSliderValues">
         <item>1250</item>
-        <item>1490</item>
+        <item>2090</item>
     </string-array>
 </resources>

@@ -92,12 +92,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="-10dp"
                     android:layout_weight="5"
-                    android:contentDescription="spinSlider"
-                    android:stepSize="10"
-                    android:valueFrom="800"
-                    android:valueTo="2500"
+                    android:stepSize="7"
+                    android:valueFrom="830"
+                    android:valueTo="2510"
                     app:labelBehavior="visible"
-                    app:values="@array/rangeSliderValues" />
+                    app:values="@array/rangeSliderValues" /><!--ПРИ СМЕНЕ ПАРАМЕТРОВ VALUE НАДО МЕНЯТЬ ИХ И В ФАЙЛЕ strings.xml-->
 
                 <TextView
                     android:layout_width="0dp"
