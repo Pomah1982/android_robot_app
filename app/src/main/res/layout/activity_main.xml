@@ -94,8 +94,8 @@
                     android:layout_weight="5"
                     android:contentDescription="spinSlider"
                     android:stepSize="10"
-                    android:valueFrom="1050"
-                    android:valueTo="1700"
+                    android:valueFrom="800"
+                    android:valueTo="2500"
                     app:labelBehavior="visible"
                     app:values="@array/rangeSliderValues" />
 
