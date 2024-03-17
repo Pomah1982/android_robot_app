@@ -99,8 +99,6 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, String> infrastructureParams = new HashMap<String, String>() {};
     //Запрошены лимиты - это первый запрос к STM
     private boolean limitsRequested;
-    /** Это первая установка значения timeSlider. Необходимо отправить сообщение об установке для запуска механизма инициализации времени на stm */
-    private boolean firstTimeSending = true;
     private boolean startMode = false;
     /** Необходимо отправить сообщение с value события. Необходимо для некоторых CheckBox (inGame) */
     private boolean needSendMessage = true;
@@ -425,9 +423,8 @@ public class MainActivity extends AppCompatActivity {
     private Slider.OnChangeListener timePeriodSliderChangeListner = new Slider.OnChangeListener() {
         @Override
         public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-            firstTimeSending = false;
-            Log.d(TAG, (!fromUser ? "pr_" : "") + (firstTimeSending ? "f_" : "") + "time = " + value);
-            setMessage(ChanelEnum.TimePeriod, (int) value, fromUser || firstTimeSending);
+            Log.d(TAG, (!fromUser ? "pr_" : "") + "time = " + value);
+            setMessage(ChanelEnum.TimePeriod, (int) value, true);//не учитывается fromUser, тк. на stm без сообщения не происходит инициализация времени
         }
     };
 
@@ -855,6 +852,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Парсит полученные от робота данные и устанавливает полученные параметры в HashMap infrastructureParams
         private void parseReciviedDataAndSetInfrParams(String data) {
+            Log(data + 'e');
             String[] units = data.split("\\|");
             HashMap<String, String> tmpParams = new HashMap<>(infrastructureParams);
 
@@ -863,6 +861,7 @@ public class MainActivity extends AppCompatActivity {
                 String[] keyVal = unit.split(":");
                 infrastructureParams.put(keyVal[0], keyVal[1]);
             }
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
