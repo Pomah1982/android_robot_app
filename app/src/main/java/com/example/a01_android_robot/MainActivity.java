@@ -942,19 +942,20 @@ public class MainActivity extends AppCompatActivity {
                         String[] keyAndLimits = unit.split(":");
                         int min = Short.parseShort(keyAndLimits[1]);
                         int max = Short.parseShort(keyAndLimits[2]);
-                        setLimits(keyAndLimits[0], min,max);
+                        int curr = Short.parseShort(keyAndLimits[3]);
+                        setLimits(keyAndLimits[0], min, max, curr);
                     }
                 }
             });
         }
 
-        public void setLimits(String key, int min, int max){
+        public void setLimits(String key, int min, int max, int curr){
             //Устанавливаем максимальные и минимальные значения для всех ползунков
             switch (key){
                 case "a":
                     angle.setValueFrom(Math.round(min/10)*10);
                     angle.setValueTo(Math.round(max/10)*10);
-                    angle.setValue(Math.round(min/10)*10);
+                    angle.setValue(Math.round(curr/10)*10);
                     angle.setStepSize(10);
                     break;
                 case "p":
@@ -962,27 +963,27 @@ public class MainActivity extends AppCompatActivity {
                     int to = max;
                     position.setValueFrom(from);
                     position.setValueTo(to);
-                    position.setValue(from);
+                    position.setValue(curr);
                     position.setStepSize(7);
                     positionLimits.setValues((float)from, (float)to);
                     break;
                 case "t":
                     timePeriod.setValueFrom(Math.round(min/100)*100);
                     timePeriod.setValueTo(Math.round(max/100)*100);
-                    timePeriod.setValue(Math.round(min/100)*100);
+                    timePeriod.setValue(Math.round(curr/100)*100);
                     timePeriod.setStepSize(100);
                     break;
                 case "r":
                     spinSlider.setValueFrom(min);
                     spinSlider.setValueTo(max);
-                    spinSlider.setValue(min);
+                    spinSlider.setValue(curr);
                     spinSlider.setStepSize(1);
                     break;
                 case "x":
                     is_min.setChecked(true);
                     speedSlider.setValueFrom(Math.round(min/10)*10);
                     speedSlider.setValueTo(Math.round(max/10)*10);
-                    speedSlider.setValue(Math.round(min/10)*10);
+                    speedSlider.setValue(Math.round(curr/10)*10);
                     speedSlider.setStepSize(10);
                     break;
                 default: return;
